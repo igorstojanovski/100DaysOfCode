@@ -2,6 +2,7 @@ package co.igorski.hundreddays.controllers;
 
 import co.igorski.hundreddays.model.Run;
 import co.igorski.hundreddays.services.RunService;
+import co.igorski.hundreddays.stores.RunStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +17,11 @@ import java.util.List;
 public class RunController {
 
     @Autowired
-    private RunService runService;
+    private RunStore runStore;
 
     @GetMapping
     public ResponseEntity<List<Run>> getAllActiveRuns() {
-        List<Run> activeRuns = runService.getActiveRuns();
+        List<Run> activeRuns = runStore.getActiveRuns();
 
         return new ResponseEntity<>(activeRuns, HttpStatus.ACCEPTED);
     }

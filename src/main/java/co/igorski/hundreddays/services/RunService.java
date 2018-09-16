@@ -1,8 +1,10 @@
 package co.igorski.hundreddays.services;
 
 import co.igorski.hundreddays.model.*;
+import co.igorski.hundreddays.model.events.RunFinished;
 import co.igorski.hundreddays.model.events.RunStarted;
 import co.igorski.hundreddays.repositories.RunRepository;
+import co.igorski.hundreddays.stores.RunStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +14,11 @@ import java.util.*;
 public class RunService {
 
     @Autowired
+    RunStore runStore;
+    @Autowired
     private RunRepository runRepository;
     @Autowired
     private ResultService resultService;
-    private final Map<String, Run> activeRuns = new HashMap<>();
 
     public Run startRun(RunStarted runStartedEvent) {
 
@@ -26,12 +29,16 @@ public class RunService {
         run.setResults(resultService.addResults(runStartedEvent));
 
         Run created = runRepository.save(run);
-        activeRuns.put(created.getId(), created);
+        runStore.activateRun(created);
 
         return created;
     }
 
-    public List<Run> getActiveRuns() {
-        return new ArrayList<>(activeRuns.values());
+    public Run endRun(RunFinished runFinished) {
+        Run run = runStore.deactivateRun(runFinished.getRunId());
+        run.setEnd(new Date());
+        runRepository.save(run);
+
+        return run;
     }
 }

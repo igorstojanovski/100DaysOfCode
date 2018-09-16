@@ -1,4 +1,4 @@
-package co.igorski.mongodbspringexample;
+package co.igorski.hundreddays;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package co.igorski.mongodbspringexample;
+package co.igorski.hundreddays;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

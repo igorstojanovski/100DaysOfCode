@@ -1,6 +1,7 @@
 package co.igorski.hundreddays.controllers.events;
 
 import co.igorski.hundreddays.model.Run;
+import co.igorski.hundreddays.model.events.RunFinished;
 import co.igorski.hundreddays.model.events.RunStarted;
 import co.igorski.hundreddays.services.RunService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,15 @@ public class RunEventController {
 
     @PostMapping
     @RequestMapping("/started")
-    public ResponseEntity<Run> startRun(@RequestBody RunStarted runStartedEvent) {
+    public ResponseEntity<Run> runFinishedStarted(@RequestBody RunStarted runStartedEvent) {
         Run run = runService.startRun(runStartedEvent);
         return new ResponseEntity<>(run, HttpStatus.CREATED);
+    }
+
+    @PostMapping
+    @RequestMapping("/finished")
+    public ResponseEntity<Run> runFinishedHandle(@RequestBody RunFinished runFinished) {
+        Run run = runService.endRun(runFinished);
+        return new ResponseEntity<>(run, HttpStatus.ACCEPTED);
     }
 }
