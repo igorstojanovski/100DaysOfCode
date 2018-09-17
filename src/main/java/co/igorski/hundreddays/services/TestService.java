@@ -65,7 +65,7 @@ public class TestService {
         Result result = getTestResult(run, testFinished.getTest());
         boolean markedFinished = false;
         if(result != null) {
-            result.setStatus(Status.RUNNING);
+            result.setStatus(Status.FINISHED);
             result.setOutcome(testFinished.getOutcome());
             markedFinished = true;
         }
