@@ -16,19 +16,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/event/run")
 public class RunEventController {
 
-    @Autowired
     private RunService runService;
+
+    @Autowired
+    public RunEventController(RunService runService) {
+        this.runService = runService;
+    }
 
     @PostMapping
     @RequestMapping("/started")
-    public ResponseEntity<Run> runFinishedStarted(@RequestBody RunStarted runStartedEvent) {
+    public ResponseEntity<Run> runStarted(@RequestBody RunStarted runStartedEvent) {
         Run run = runService.startRun(runStartedEvent);
         return new ResponseEntity<>(run, HttpStatus.CREATED);
     }
 
     @PostMapping
     @RequestMapping("/finished")
-    public ResponseEntity<Run> runFinishedHandle(@RequestBody RunFinished runFinished) {
+    public ResponseEntity<Run> runFinished(@RequestBody RunFinished runFinished) {
         Run run = runService.endRun(runFinished);
         return new ResponseEntity<>(run, HttpStatus.ACCEPTED);
     }
