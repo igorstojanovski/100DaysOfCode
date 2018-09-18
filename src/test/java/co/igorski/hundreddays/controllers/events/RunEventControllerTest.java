@@ -3,6 +3,7 @@ package co.igorski.hundreddays.controllers.events;
 import co.igorski.hundreddays.model.Organization;
 import co.igorski.hundreddays.model.Run;
 import co.igorski.hundreddays.model.User;
+import co.igorski.hundreddays.model.events.RunFinished;
 import co.igorski.hundreddays.model.events.RunStarted;
 import co.igorski.hundreddays.services.RunService;
 import org.junit.jupiter.api.BeforeAll;
@@ -58,7 +59,7 @@ class RunEventControllerTest {
     }
 
     @Test
-    public void shouldReturnRunObjectFromService() {
+    public void shouldReturnRunObjectWhenStarted() {
         ArrayList<co.igorski.hundreddays.model.Test> tests = new ArrayList<>();
         tests.add(testOne);
         tests.add(testTwo);
@@ -75,5 +76,19 @@ class RunEventControllerTest {
 
         assertThat(runResponseEntity.getBody()).isEqualTo(run);
         assertThat(runResponseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    public void shouldReturnRunObjectWhenFinished() {
+        RunFinished runFinished = new RunFinished();
+        runFinished.setRunId("1");
+
+        Run run = new Run();
+        when(runService.endRun(runFinished)).thenReturn(run);
+
+        ResponseEntity<Run> runResponseEntity = runController.runFinished(runFinished);
+
+        assertThat(runResponseEntity.getBody()).isEqualTo(run);
+        assertThat(runResponseEntity.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
     }
 }
