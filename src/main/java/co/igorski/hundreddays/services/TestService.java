@@ -9,14 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Date;
 
 @Service
 public class TestService {
 
-    @Autowired
     private TestRepository testRepository;
-    @Autowired
     private RunStore runStore;
+
+    @Autowired
+    public TestService(TestRepository testRepository, RunStore runStore) {
+        this.testRepository = testRepository;
+        this.runStore = runStore;
+    }
 
     /**
      * If the {@link Test} object exists it will retrieve it from DB if not it will
@@ -40,6 +45,7 @@ public class TestService {
         boolean markedStarted = false;
         if(result != null) {
             result.setStatus(Status.RUNNING);
+            result.setStart(new Date());
             markedStarted = true;
         }
 
@@ -67,6 +73,7 @@ public class TestService {
         if(result != null) {
             result.setStatus(Status.FINISHED);
             result.setOutcome(testFinished.getOutcome());
+            result.setEnd(new Date());
             markedFinished = true;
         }
 

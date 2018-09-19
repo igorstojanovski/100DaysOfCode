@@ -16,8 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/event/test")
 public class TestEventController {
 
+    private final TestService testService;
+
     @Autowired
-    private TestService testService;
+    public TestEventController(TestService testService) {
+        this.testService = testService;
+    }
 
     @PostMapping
     @RequestMapping("/started")

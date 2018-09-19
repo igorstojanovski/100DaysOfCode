@@ -21,8 +21,7 @@ import java.util.ArrayList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class)
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
 class RunEventControllerTest {
 
     private static Organization organization;
