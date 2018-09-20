@@ -1,11 +1,14 @@
 package co.igorski.hundreddays.services;
 
 import co.igorski.hundreddays.model.*;
+import co.igorski.hundreddays.model.events.Event;
 import co.igorski.hundreddays.model.events.RunFinished;
 import co.igorski.hundreddays.model.events.RunStarted;
 import co.igorski.hundreddays.repositories.RunRepository;
 import co.igorski.hundreddays.stores.RunStore;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -19,6 +22,15 @@ public class RunService {
     private RunRepository runRepository;
     @Autowired
     private ResultService resultService;
+
+    @KafkaListener(topics = "test-events", groupId = "run")
+    public void eventHandler(ConsumerRecord<String, Event> cr) {
+        System.out.println("Run Service received event: " + cr.value().getClass());
+        Event event = cr.value();
+        if(event instanceof RunFinished) {
+            endRun((RunFinished) event);
+        }
+    }
 
     public Run startRun(RunStarted runStartedEvent) {
 

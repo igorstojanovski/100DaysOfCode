@@ -25,8 +25,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -81,15 +84,6 @@ public class SmokeTestIT {
         restTemplate.postForEntity("/event/test/started", testOneStarted, co.igorski.hundreddays.model.Test.class);
         restTemplate.postForEntity("/event/test/started", testTwoStarted, co.igorski.hundreddays.model.Test.class);
 
-        ResponseEntity<Run[]> activeRunsResponse = restTemplate.getForEntity("/run", Run[].class);
-        assertThat(activeRunsResponse.getBody()).hasSize(1);
-        Run activeRun = activeRunsResponse.getBody()[0];
-        List<Result> currentResults = activeRun.getResults();
-        assertThat(currentResults).hasSize(2);
-
-        assertThat(currentResults.get(0).getStatus()).isEqualTo(Status.RUNNING);
-        assertThat(currentResults.get(1).getStatus()).isEqualTo(Status.RUNNING);
-
         TestFinished testOneFinished = new TestFinished();
         testOneFinished.setRunId(runId);
         testOneFinished.setTimestamp(new Date());
@@ -105,30 +99,26 @@ public class SmokeTestIT {
         restTemplate.postForEntity("/event/test/finished", testTwoFinished, co.igorski.hundreddays.model.Test.class);
         restTemplate.postForEntity("/event/test/finished", testOneFinished, co.igorski.hundreddays.model.Test.class);
 
-        activeRunsResponse = restTemplate.getForEntity("/run", Run[].class);
-        activeRun = activeRunsResponse.getBody()[0];
-        currentResults = activeRun.getResults();
-        assertThat(currentResults).hasSize(2);
-
-        assertThat(currentResults.get(0).getStatus()).isEqualTo(Status.FINISHED);
-        assertThat(currentResults.get(1).getStatus()).isEqualTo(Status.FINISHED);
+        await().atMost(5, SECONDS).until(() -> getCurrentResults().get(0).getStatus() == Status.FINISHED);
+        await().atMost(5, SECONDS).until(() -> getCurrentResults().get(1).getStatus() == Status.FINISHED);
 
         RunFinished runFinished = new RunFinished();
         runFinished.setRunId(runId);
+        await().atMost(5, SECONDS).until(() -> Objects.requireNonNull(getCurrentRun(runFinished).getBody()).length == 0);
+    }
+
+    private ResponseEntity<Run[]> getCurrentRun(RunFinished runFinished) {
         restTemplate.postForEntity("/event/run/finished", runFinished, Run.class);
 
-        activeRunsResponse = restTemplate.getForEntity("/run", Run[].class);
-        assertThat(activeRunsResponse.getBody()).hasSize(0);
+        return restTemplate.getForEntity("/run", Run[].class);
     }
 
-    @TestConfiguration
-    static class Config {
-
-        @Bean
-        public RestTemplateBuilder restTemplateBuilder() {
-            return new RestTemplateBuilder().setConnectTimeout(1000).setReadTimeout(1000);
-        }
-
+    private List<Result> getCurrentResults() {
+        ResponseEntity<Run[]> activeRunsResponse = restTemplate.getForEntity("/run", Run[].class);
+        assertThat(activeRunsResponse.getBody()).hasSize(1);
+        Run activeRun = activeRunsResponse.getBody()[0];
+        List<Result> currentResults = activeRun.getResults();
+        assertThat(currentResults).hasSize(2);
+        return currentResults;
     }
-
 }

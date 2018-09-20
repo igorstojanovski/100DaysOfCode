@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class RunFinished {
+public class RunFinished extends Event {
     private String runId;
 }

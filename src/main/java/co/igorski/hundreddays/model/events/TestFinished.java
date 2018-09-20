@@ -6,14 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @NoArgsConstructor
-public class TestFinished {
+public class TestFinished extends Event {
     private String runId;
     private Test test;
     private Outcome outcome;
-    private Date timestamp;
 }
