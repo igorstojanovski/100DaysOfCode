@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -20,4 +21,17 @@ public class Test {
     private String testName;
     @NotNull
     private String testPath;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Test test = (Test) o;
+        return Objects.equals(testName, test.testName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(testName);
+    }
 }

@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,6 +21,6 @@ public class Run {
     private String organizationId;
     private Date start;
     private Date end;
-    private Collection<Result> results;
+    private List<Result> results;
 
 }

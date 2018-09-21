@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class RunStarted {
+public class RunStarted extends Event {
     private Organization organization;
     private User user;
     private List<Test> tests;
