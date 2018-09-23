@@ -17,7 +17,7 @@ public class OrganizationService {
         return organizationRepository.save(organization);
     }
 
-    private Optional<Organization> getOrganization(String organizationId) {
+    public Optional<Organization> getOrganization(String organizationId) {
         return organizationRepository.findById(organizationId);
     }
 
