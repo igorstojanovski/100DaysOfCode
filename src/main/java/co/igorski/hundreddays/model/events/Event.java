@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import java.util.Date;
 
-@JsonTypeInfo(use= JsonTypeInfo.Id.CLASS, include= JsonTypeInfo.As.PROPERTY, property="@class")
+@JsonTypeInfo(use= JsonTypeInfo.Id.NAME, include= JsonTypeInfo.As.PROPERTY, property="type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value=TestFinished.class, name = "TestFinished"),
         @JsonSubTypes.Type(value=TestStarted.class, name = "TestStarted"),

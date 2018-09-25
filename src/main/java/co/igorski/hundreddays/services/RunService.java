@@ -17,11 +17,13 @@ import java.util.Date;
 public class RunService {
 
     @Autowired
-    RunStore runStore;
+    private RunStore runStore;
     @Autowired
     private RunRepository runRepository;
     @Autowired
     private ResultService resultService;
+    @Autowired
+    private OrganizationService organizationService;
 
     @KafkaListener(topics = "test-events", groupId = "run")
     public void eventHandler(ConsumerRecord<String, Event> cr) {
