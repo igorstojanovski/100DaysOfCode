@@ -17,7 +17,7 @@ public class Result {
     @Id
     private String id;
     @DBRef
-    private Test test;
+    private CcTest test;
     private Outcome outcome;
     private Status status;
     private Date start;

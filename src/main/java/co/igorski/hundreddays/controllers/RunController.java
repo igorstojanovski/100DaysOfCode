@@ -15,14 +15,25 @@ import java.util.List;
 @RestController
 @RequestMapping("/run")
 public class RunController {
+    private RunStore runStore;
+    private RunService runService;
 
     @Autowired
-    private RunStore runStore;
+    public RunController(RunStore runStore, RunService runService) {
+        this.runStore = runStore;
+        this.runService = runService;
+    }
 
-    @GetMapping
+    @GetMapping(path = "/active")
     public ResponseEntity<List<Run>> getAllActiveRuns() {
         List<Run> activeRuns = runStore.getActiveRuns();
 
-        return new ResponseEntity<>(activeRuns, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(activeRuns, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Run>> getAllRuns() {
+        List<Run> runs = runService.getAllRuns();
+        return new ResponseEntity<>(runs, HttpStatus.OK);
     }
 }

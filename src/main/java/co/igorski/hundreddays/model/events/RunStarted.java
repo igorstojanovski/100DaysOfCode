@@ -1,7 +1,7 @@
 package co.igorski.hundreddays.model.events;
 
+import co.igorski.hundreddays.model.CcTest;
 import co.igorski.hundreddays.model.Organization;
-import co.igorski.hundreddays.model.Test;
 import co.igorski.hundreddays.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,5 +15,5 @@ import java.util.List;
 public class RunStarted extends Event {
     private Organization organization;
     private User user;
-    private List<Test> tests;
+    private List<CcTest> tests;
 }

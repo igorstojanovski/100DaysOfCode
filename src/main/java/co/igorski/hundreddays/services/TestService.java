@@ -1,6 +1,9 @@
 package co.igorski.hundreddays.services;
 
-import co.igorski.hundreddays.model.*;
+import co.igorski.hundreddays.model.CcTest;
+import co.igorski.hundreddays.model.Result;
+import co.igorski.hundreddays.model.Run;
+import co.igorski.hundreddays.model.Status;
 import co.igorski.hundreddays.model.events.Event;
 import co.igorski.hundreddays.model.events.TestFinished;
 import co.igorski.hundreddays.model.events.TestStarted;
@@ -45,14 +48,14 @@ public class TestService {
 
 
     /**
-     * If the {@link Test} object exists it will retrieve it from DB if not it will
+     * If the {@link CcTest} object exists it will retrieve it from DB if not it will
      * create one.
      *
      * @param test the test we want to create
      * @return the test object that exists in the database
      */
-    Test getOrCreate(Test test) {
-        Test byTestName = testRepository.findByTestName(test.getTestName());
+    CcTest getOrCreate(CcTest test) {
+        CcTest byTestName = testRepository.findByTestName(test.getTestName());
         if(byTestName != null) {
             return byTestName;
         } else {
@@ -73,7 +76,7 @@ public class TestService {
         return markedStarted;
     }
 
-    private Result getTestResult(Run run, Test test) {
+    private Result getTestResult(Run run, CcTest test) {
         Collection<Result> results = run.getResults();
         Result result = null;
 

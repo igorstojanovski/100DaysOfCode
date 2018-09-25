@@ -33,7 +33,7 @@ public class TestRuns extends VerticalLayout implements DataListener {
         dataProvider = new ListDataProvider<>(runStore.getLiveRuns());
         grid.setDataProvider(dataProvider);
         grid.addComponentColumn(run -> new NativeButton(run.getId(), evt -> {})).setHeader("ID");
-        grid.addColumn((ValueProvider<Run, Integer>) run -> run.getResults().size()).setHeader("Test Count");
+        grid.addColumn((ValueProvider<Run, Integer>) run -> run.getResults().size()).setHeader("CcTest Count");
         grid.addColumn(
                 new LocalDateTimeRenderer<>(
                         run -> run.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),

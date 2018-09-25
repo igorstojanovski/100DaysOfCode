@@ -1,6 +1,6 @@
 package co.igorski.hundreddays.services;
 
-import co.igorski.hundreddays.model.*;
+import co.igorski.hundreddays.model.Run;
 import co.igorski.hundreddays.model.events.Event;
 import co.igorski.hundreddays.model.events.RunFinished;
 import co.igorski.hundreddays.model.events.RunStarted;
@@ -12,22 +12,24 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class RunService {
 
-    @Autowired
     private RunStore runStore;
-    @Autowired
     private RunRepository runRepository;
-    @Autowired
     private ResultService resultService;
+
     @Autowired
-    private OrganizationService organizationService;
+    public RunService(RunStore runStore, RunRepository runRepository, ResultService resultService) {
+        this.runStore = runStore;
+        this.runRepository = runRepository;
+        this.resultService = resultService;
+    }
 
     @KafkaListener(topics = "test-events", groupId = "run")
     public void eventHandler(ConsumerRecord<String, Event> cr) {
-        System.out.println("Run Service received event: " + cr.value().getClass());
         Event event = cr.value();
         if(event instanceof RunFinished) {
             endRun((RunFinished) event);
@@ -38,7 +40,7 @@ public class RunService {
 
         Run run = new Run();
         run.setOrganizationId(runStartedEvent.getOrganization().getId());
-        run.setStart(new Date());
+        run.setStart(runStartedEvent.getTimestamp());
         run.setUserId(runStartedEvent.getUser().getId());
         run.setResults(resultService.addResults(runStartedEvent));
 
@@ -54,5 +56,9 @@ public class RunService {
         runRepository.save(run);
 
         return run;
+    }
+
+    public List<Run> getAllRuns() {
+        return runRepository.findAll();
     }
 }

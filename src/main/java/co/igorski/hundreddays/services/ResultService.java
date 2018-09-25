@@ -1,8 +1,8 @@
 package co.igorski.hundreddays.services;
 
+import co.igorski.hundreddays.model.CcTest;
 import co.igorski.hundreddays.model.Result;
 import co.igorski.hundreddays.model.Status;
-import co.igorski.hundreddays.model.Test;
 import co.igorski.hundreddays.model.events.RunStarted;
 import co.igorski.hundreddays.repositories.ResultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class ResultService {
     public List<Result> addResults(RunStarted runStartedEvent) {
         List<Result> results = new ArrayList<>();
 
-        for(Test test : runStartedEvent.getTests()) {
+        for(CcTest test : runStartedEvent.getTests()) {
             Result result = new Result();
             result.setStatus(Status.QUEUED);
             result.setTest(testService.getOrCreate(test));
