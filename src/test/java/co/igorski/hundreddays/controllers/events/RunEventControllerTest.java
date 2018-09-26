@@ -1,5 +1,6 @@
 package co.igorski.hundreddays.controllers.events;
 
+import co.igorski.hundreddays.model.CcTest;
 import co.igorski.hundreddays.model.Organization;
 import co.igorski.hundreddays.model.Run;
 import co.igorski.hundreddays.model.User;
@@ -26,8 +27,8 @@ class RunEventControllerTest {
 
     private static Organization organization;
     private static User user;
-    private static co.igorski.hundreddays.model.Test testOne;
-    private static co.igorski.hundreddays.model.Test testTwo;
+    private static CcTest testOne;
+    private static CcTest testTwo;
     @Mock
     private RunService runService;
     private RunEventController runController;
@@ -43,11 +44,11 @@ class RunEventControllerTest {
         user.setId("5b94464d6e6440221810064c");
         user.setOrganizationId("5b943fbd6e644024f4cab9e2");
 
-        testOne = new co.igorski.hundreddays.model.Test();
+        testOne = new CcTest();
         testOne.setTestName("shouldMarkRunAsStarted");
         testOne.setTestPath("org.igorski");
 
-        testTwo = new co.igorski.hundreddays.model.Test();
+        testTwo = new CcTest();
         testTwo.setTestName("shouldMarkRunAsFinished");
         testTwo.setTestPath("org.igorski");
     }
@@ -59,7 +60,7 @@ class RunEventControllerTest {
 
     @Test
     public void shouldReturnRunObjectWhenStarted() {
-        ArrayList<co.igorski.hundreddays.model.Test> tests = new ArrayList<>();
+        ArrayList<CcTest> tests = new ArrayList<>();
         tests.add(testOne);
         tests.add(testTwo);
 

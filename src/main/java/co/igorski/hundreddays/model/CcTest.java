@@ -14,7 +14,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @Document
-public class Test {
+public class CcTest {
     @Id
     private String id;
     @Indexed(unique=true)
@@ -26,7 +26,7 @@ public class Test {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Test test = (Test) o;
+        CcTest test = (CcTest) o;
         return Objects.equals(testName, test.testName);
     }
 

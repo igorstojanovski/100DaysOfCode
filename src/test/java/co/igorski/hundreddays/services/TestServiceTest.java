@@ -1,5 +1,6 @@
 package co.igorski.hundreddays.services;
 
+import co.igorski.hundreddays.model.CcTest;
 import co.igorski.hundreddays.model.Outcome;
 import co.igorski.hundreddays.model.Result;
 import co.igorski.hundreddays.model.Run;
@@ -32,12 +33,12 @@ class TestServiceTest {
     private TestRepository testRepository;
     @Mock
     private RunStore runStore;
-    private co.igorski.hundreddays.model.Test theTest;
+    private CcTest theTest;
     private Run run;
 
     @BeforeEach
     public void beforeEach() {
-        theTest = new co.igorski.hundreddays.model.Test();
+        theTest = new CcTest();
         theTest.setTestName("shouldMarkRunAsStarted");
         theTest.setTestPath("org.igorski");
 

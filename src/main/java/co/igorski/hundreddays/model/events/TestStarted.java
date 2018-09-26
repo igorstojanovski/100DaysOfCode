@@ -1,6 +1,6 @@
 package co.igorski.hundreddays.model.events;
 
-import co.igorski.hundreddays.model.Test;
+import co.igorski.hundreddays.model.CcTest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,5 +10,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TestStarted extends Event {
     private String runId;
-    private Test test;
+    private CcTest test;
 }

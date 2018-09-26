@@ -1,5 +1,6 @@
 package co.igorski.hundreddays;
 
+import co.igorski.hundreddays.model.CcTest;
 import co.igorski.hundreddays.model.Organization;
 import co.igorski.hundreddays.model.Outcome;
 import co.igorski.hundreddays.model.Result;
@@ -14,10 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -49,15 +47,15 @@ public class SmokeTestIT {
         user.setId("5b94464d6e6440221810064c");
         user.setOrganizationId("5b943fbd6e644024f4cab9e2");
 
-        co.igorski.hundreddays.model.Test testOne = new co.igorski.hundreddays.model.Test();
+        CcTest testOne = new CcTest();
         testOne.setTestName("shouldMarkRunAsStarted");
         testOne.setTestPath("org.igorski");
 
-        co.igorski.hundreddays.model.Test testTwo = new co.igorski.hundreddays.model.Test();
+        CcTest testTwo = new CcTest();
         testTwo.setTestName("shouldMarkRunAsFinished");
         testTwo.setTestPath("org.igorski");
 
-        List<co.igorski.hundreddays.model.Test> tests = new ArrayList<>();
+        List<CcTest> tests = new ArrayList<>();
         tests.add(testOne);
         tests.add(testTwo);
 
@@ -81,8 +79,8 @@ public class SmokeTestIT {
         testTwoStarted.setTimestamp(new Date());
         testTwoStarted.setTest(testTwo);
 
-        restTemplate.postForEntity("/event/test/started", testOneStarted, co.igorski.hundreddays.model.Test.class);
-        restTemplate.postForEntity("/event/test/started", testTwoStarted, co.igorski.hundreddays.model.Test.class);
+        restTemplate.postForEntity("/event/test/started", testOneStarted, CcTest.class);
+        restTemplate.postForEntity("/event/test/started", testTwoStarted, CcTest.class);
 
         TestFinished testOneFinished = new TestFinished();
         testOneFinished.setRunId(runId);
@@ -96,8 +94,8 @@ public class SmokeTestIT {
         testTwoFinished.setTest(testTwo);
         testTwoFinished.setOutcome(Outcome.PASSED);
 
-        restTemplate.postForEntity("/event/test/finished", testTwoFinished, co.igorski.hundreddays.model.Test.class);
-        restTemplate.postForEntity("/event/test/finished", testOneFinished, co.igorski.hundreddays.model.Test.class);
+        restTemplate.postForEntity("/event/test/finished", testTwoFinished, CcTest.class);
+        restTemplate.postForEntity("/event/test/finished", testOneFinished, CcTest.class);
 
         await().atMost(5, SECONDS).until(() -> getCurrentResults().get(0).getStatus() == Status.FINISHED);
         await().atMost(5, SECONDS).until(() -> getCurrentResults().get(1).getStatus() == Status.FINISHED);

@@ -1,6 +1,6 @@
 package co.igorski.hundreddays.controllers.events;
 
-import co.igorski.hundreddays.model.Test;
+import co.igorski.hundreddays.model.CcTest;
 import co.igorski.hundreddays.model.events.Event;
 import co.igorski.hundreddays.model.events.TestFinished;
 import co.igorski.hundreddays.model.events.TestStarted;
@@ -30,14 +30,14 @@ public class TestEventController {
 
     @PostMapping
     @RequestMapping("/started")
-    public ResponseEntity<Test> runFinishedStarted(@RequestBody TestStarted testStarted) {
+    public ResponseEntity<CcTest> runFinishedStarted(@RequestBody TestStarted testStarted) {
         template.send("test-events", testStarted);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @PostMapping
     @RequestMapping("/finished")
-    public ResponseEntity<Test> runFinishedHandle(@RequestBody TestFinished testFinished) {
+    public ResponseEntity<CcTest> runFinishedHandle(@RequestBody TestFinished testFinished) {
         template.send("test-events", testFinished);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
