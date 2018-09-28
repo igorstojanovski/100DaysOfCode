@@ -74,6 +74,7 @@ public class TestRunSimulator {
         runStarted.setOrganization(organization);
         runStarted.setUser(user);
         runStarted.setTests(tests);
+        runStarted.setTimestamp(new Date());
 
         ResponseEntity<Run> runResponseEntity = restTemplate.postForEntity(RUN_STARTED, runStarted, Run.class);
         String runId = runResponseEntity.getBody().getId();
