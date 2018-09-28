@@ -15,14 +15,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 
-@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@ExtendWith(MockitoExtension.class)
 class RunEventControllerTest {
 
     private static Organization organization;
@@ -90,5 +89,18 @@ class RunEventControllerTest {
 
         assertThat(runResponseEntity.getBody()).isEqualTo(run);
         assertThat(runResponseEntity.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
+    }
+
+    @Test
+    public void shouldThrowWhenTimeStampNotPresent() {
+        ArrayList<CcTest> tests = new ArrayList<>();
+        tests.add(testOne);
+
+        RunStarted runStarted = new RunStarted();
+        runStarted.setTests(tests);
+        runStarted.setUser(user);
+        runStarted.setOrganization(organization);
+
+        assertThat(runController.runStarted(runStarted).getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }

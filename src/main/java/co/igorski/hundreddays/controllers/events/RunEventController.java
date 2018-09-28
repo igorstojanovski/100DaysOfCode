@@ -31,6 +31,9 @@ public class RunEventController {
     @PostMapping
     @RequestMapping("/started")
     public ResponseEntity<Run> runStarted(@RequestBody RunStarted runStartedEvent) {
+        if(runStartedEvent.getTimestamp() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         Run run = runService.startRun(runStartedEvent);
         return new ResponseEntity<>(run, HttpStatus.CREATED);
     }
