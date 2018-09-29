@@ -1,5 +1,6 @@
 package co.igorski.hundreddays.services;
 
+import co.igorski.hundreddays.model.Result;
 import co.igorski.hundreddays.model.Run;
 import co.igorski.hundreddays.model.events.Event;
 import co.igorski.hundreddays.model.events.RunFinished;
@@ -8,11 +9,15 @@ import co.igorski.hundreddays.repositories.RunRepository;
 import co.igorski.hundreddays.stores.RunStore;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RunService {
@@ -60,5 +65,23 @@ public class RunService {
 
     public List<Run> getAllRuns() {
         return runRepository.findAll();
+    }
+
+    public Page<Run> getRuns(int offset, int limit) {
+        System.out.println("OFFSET : " + offset + " LIMIT: " + limit);
+        return runRepository.findAll(PageRequest.of(offset, offset + limit));
+    }
+
+    public int getRunCount() {
+        return (int) runRepository.findAll().size();
+    }
+
+    public List<Result> getRunResults(String runId) {
+        Optional<Run> runOptional = runRepository.findById(runId);
+        List<Result> results = new ArrayList<>();
+        if(runOptional.isPresent()) {
+            results = runOptional.get().getResults();
+        }
+        return results;
     }
 }

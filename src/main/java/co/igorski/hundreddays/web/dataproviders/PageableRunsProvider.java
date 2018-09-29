@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PageableRunProvider<T, F> extends PageableDataProvider<T, F> {
+public class PageableRunsProvider<T, F> extends PageableDataProvider<T, F> {
 
     @Autowired
     RunRepository runRepository;

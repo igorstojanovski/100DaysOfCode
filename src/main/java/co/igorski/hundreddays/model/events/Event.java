@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @JsonTypeInfo(use= JsonTypeInfo.Id.NAME, include= JsonTypeInfo.As.PROPERTY, property="type")
@@ -19,5 +20,6 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 public class Event {
+    @NotNull
     private Date timestamp;
 }

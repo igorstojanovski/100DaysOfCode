@@ -6,6 +6,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.artur.spring.dataprovider.PageableDataProvider;
 
@@ -18,7 +19,7 @@ public class TestRuns extends VerticalLayout {
 
     public TestRuns(@Autowired PageableDataProvider<Run, Void> pageableDataProvider) {
         Grid<Run> grid = new Grid<>();
-        grid.addColumn(Run::getId).setHeader("ID");
+        grid.addComponentColumn(run -> new RouterLink(run.getId(), SingleRun.class, run.getId())).setHeader("ID");
         grid.addColumn((ValueProvider<Run, Integer>) run -> run.getResults().size()).setHeader("CcTest Count");
         grid.addColumn(
                 new LocalDateTimeRenderer<>(
