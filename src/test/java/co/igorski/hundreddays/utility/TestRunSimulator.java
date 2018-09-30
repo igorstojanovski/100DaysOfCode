@@ -10,6 +10,7 @@ import co.igorski.hundreddays.model.events.RunStarted;
 import co.igorski.hundreddays.model.events.TestFinished;
 import co.igorski.hundreddays.model.events.TestStarted;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -29,12 +30,32 @@ public class TestRunSimulator {
     private static final String RUN_STARTED = HOME + "/event/run/started";
     @Autowired
     private static TestRestTemplate restTemplate;
+    private static List<String> testNames = new ArrayList<>();
+    private List<CcTest> tests = new ArrayList<>();
+    private List<TestStarted> testStartedEvents = new ArrayList<>();
+    private List<TestFinished> testFinishedEvents = new ArrayList<>();
 
     @BeforeAll
     public static void beforeAll() {
         restTemplate = new TestRestTemplate();
+        testNames.add("shouldRunTestOne");
+        testNames.add("shouldRunTestTwo");
+        testNames.add("shouldRunTestThree");
+        testNames.add("shouldRunTestFour");
+        testNames.add("shouldRunTestFive");
+        testNames.add("shouldRunTestSix");
+        testNames.add("shouldRunTestSeven");
+        testNames.add("shouldRunTestEight");
+        testNames.add("shouldRunTestNine");
+        testNames.add("shouldRunTestTen");
     }
 
+    @BeforeEach
+    public void beforeEach() {
+        tests.clear();
+        testFinishedEvents.clear();
+        testStartedEvents.clear();
+    }
     @Test
     public void shouldSimulateWholeRun() throws InterruptedException {
         Organization organization = new Organization();
@@ -47,27 +68,7 @@ public class TestRunSimulator {
         user.setOrganizationId("5b943fbd6e644024f4cab9e2");
 
         // ----------- CREATE TESTS -----------------
-        CcTest testOne = new CcTest();
-        testOne.setTestName("shouldRunTestOne");
-        testOne.setTestPath("org.igorski");
-
-        CcTest testTwo = new CcTest();
-        testTwo.setTestName("shouldRunTestTwo");
-        testTwo.setTestPath("org.igorski");
-
-        CcTest testThree = new CcTest();
-        testThree.setTestName("shouldRunTestThree");
-        testThree.setTestPath("org.igorski");
-
-        CcTest testFour = new CcTest();
-        testFour.setTestName("shouldRunTestFour");
-        testFour.setTestPath("org.igorski");
-
-        List<CcTest> tests = new ArrayList<>();
-        tests.add(testOne);
-        tests.add(testTwo);
-        tests.add(testThree);
-        tests.add(testFour);
+        generateTests(RANDOM.nextInt(9) + 1);
         // ------------------------------------------
 
         RunStarted runStarted = new RunStarted();
@@ -81,68 +82,14 @@ public class TestRunSimulator {
 
         // ----------- START TESTS -----------------
 
-        TestStarted testOneStarted = new TestStarted();
-        testOneStarted.setRunId(runId);
-        testOneStarted.setTimestamp(new Date());
-        testOneStarted.setTest(testOne);
+        generateTestStartedEvents(runId);
+        fireTestStartedEvents();
 
-        TestStarted testTwoStarted = new TestStarted();
-        testTwoStarted.setRunId(runId);
-        testTwoStarted.setTimestamp(new Date());
-        testTwoStarted.setTest(testTwo);
-
-        TestStarted testThreeStarted = new TestStarted();
-        testThreeStarted.setRunId(runId);
-        testThreeStarted.setTimestamp(new Date());
-        testThreeStarted.setTest(testThree);
-
-        TestStarted testFourStarted = new TestStarted();
-        testFourStarted.setRunId(runId);
-        testFourStarted.setTimestamp(new Date());
-        testFourStarted.setTest(testFour);
-
-        restTemplate.postForEntity(TEST_STARTED, testOneStarted, CcTest.class);
-        Thread.sleep(getMillis());
-        restTemplate.postForEntity(TEST_STARTED, testTwoStarted, CcTest.class);
-        Thread.sleep(getMillis());
-        restTemplate.postForEntity(TEST_STARTED, testThreeStarted, CcTest.class);
-        Thread.sleep(getMillis());
-        restTemplate.postForEntity(TEST_STARTED, testFourStarted, CcTest.class);
         // ------------------------------------------
 
         // ----------- FINISH TESTS -----------------
-        TestFinished testOneFinished = new TestFinished();
-        testOneFinished.setRunId(runId);
-        testOneFinished.setTimestamp(new Date());
-        testOneFinished.setTest(testOne);
-        testOneFinished.setOutcome(toggleOutcome());
-
-        TestFinished testTwoFinished = new TestFinished();
-        testTwoFinished.setRunId(runId);
-        testTwoFinished.setTimestamp(new Date());
-        testTwoFinished.setTest(testTwo);
-        testTwoFinished.setOutcome(toggleOutcome());
-
-        TestFinished testThreeFinished = new TestFinished();
-        testThreeFinished.setRunId(runId);
-        testThreeFinished.setTimestamp(new Date());
-        testThreeFinished.setTest(testThree);
-        testThreeFinished.setOutcome(toggleOutcome());
-
-        TestFinished testFourFinished = new TestFinished();
-        testFourFinished.setRunId(runId);
-        testFourFinished.setTimestamp(new Date());
-        testFourFinished.setTest(testFour);
-        testFourFinished.setOutcome(toggleOutcome());
-
-        Thread.sleep(getMillis());
-        restTemplate.postForEntity(TEST_FINISHED, testOneFinished, CcTest.class);
-        Thread.sleep(getMillis());
-        restTemplate.postForEntity(TEST_FINISHED, testTwoFinished, CcTest.class);
-        Thread.sleep(getMillis());
-        restTemplate.postForEntity(TEST_FINISHED, testFourFinished, CcTest.class);
-        Thread.sleep(getMillis());
-        restTemplate.postForEntity(TEST_FINISHED, testThreeFinished, CcTest.class);
+        generateTestFinishedEvents(runId);
+        fireTestFinishedEvents();
 
         // ------------------------------------------
 
@@ -153,11 +100,58 @@ public class TestRunSimulator {
         restTemplate.postForEntity(RUN_FINISHED, runFinished, Run.class);
     }
 
+    private void fireTestFinishedEvents() throws InterruptedException {
+        for(TestFinished testFinished : testFinishedEvents) {
+            Thread.sleep(getMillis());
+            restTemplate.postForEntity(TEST_FINISHED, testFinished, CcTest.class);
+        }
+    }
+
+    private void fireTestStartedEvents() throws InterruptedException {
+        for(TestStarted testStarted : testStartedEvents) {
+            restTemplate.postForEntity(TEST_STARTED, testStarted, CcTest.class);
+            Thread.sleep(getMillis());
+        }
+    }
+
+    private void generateTests(int count) {
+        for(int i = 0 ; i<count; i++) {
+            CcTest test = new CcTest();
+            test.setTestName(testNames.get(i));
+            test.setTestPath("org.igorski");
+
+            tests.add(test);
+        }
+    }
+
+    private void generateTestStartedEvents(String runId) {
+        for(CcTest test : tests) {
+            TestStarted testStarted = new TestStarted();
+            testStarted.setRunId(runId);
+            testStarted.setTimestamp(new Date());
+            testStarted.setTest(test);
+
+            testStartedEvents.add(testStarted);
+        }
+    }
+
+    private void generateTestFinishedEvents(String runId) {
+        for(CcTest test : tests) {
+            TestFinished testFinished = new TestFinished();
+            testFinished.setRunId(runId);
+            testFinished.setTimestamp(new Date());
+            testFinished.setTest(test);
+            testFinished.setOutcome(toggleOutcome());
+
+            testFinishedEvents.add(testFinished);
+        }
+    }
+
     private long getMillis() {
         return RANDOM.nextInt(1000);
     }
 
     private Outcome toggleOutcome() {
-        return RANDOM.nextInt(100)/2 == 1 ? Outcome.PASSED : Outcome.FAILED;
+        return RANDOM.nextInt(100)%2 == 1 ? Outcome.PASSED : Outcome.FAILED;
     }
 }
