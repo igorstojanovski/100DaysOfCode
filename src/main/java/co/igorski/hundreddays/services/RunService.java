@@ -14,10 +14,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class RunService {
@@ -83,5 +87,20 @@ public class RunService {
             results = runOptional.get().getResults();
         }
         return results;
+    }
+
+    public String getFormattedTestDuration(Result result) {
+        LocalDateTime start = result.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime end = result.getEnd().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+        Duration duration = Duration.between(start, end);
+        long millis = duration.toMillis();
+
+        return String.format("%02d:%02d:%02d",
+                TimeUnit.MILLISECONDS.toHours(millis),
+                TimeUnit.MILLISECONDS.toMinutes(millis) -
+                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+                TimeUnit.MILLISECONDS.toSeconds(millis) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
     }
 }

@@ -148,7 +148,7 @@ public class TestRunSimulator {
     }
 
     private long getMillis() {
-        return RANDOM.nextInt(1000);
+        return RANDOM.nextInt(10000);
     }
 
     private Outcome toggleOutcome() {
