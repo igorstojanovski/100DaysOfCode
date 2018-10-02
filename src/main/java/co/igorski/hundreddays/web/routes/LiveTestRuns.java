@@ -1,8 +1,9 @@
-package co.igorski.hundreddays.web;
+package co.igorski.hundreddays.web.routes;
 
 import co.igorski.hundreddays.model.Run;
 import co.igorski.hundreddays.services.OrganizationService;
 import co.igorski.hundreddays.stores.RunStore;
+import co.igorski.hundreddays.web.DataListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.NativeButton;
@@ -22,16 +23,14 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
-@Route("view")
+@Route("live-runs")
 @Push(transport = Transport.LONG_POLLING)
-public class TestRuns extends VerticalLayout implements DataListener {
+public class LiveTestRuns extends VerticalLayout implements DataListener {
 
     private final ListDataProvider dataProvider;
 
-    public TestRuns(@Autowired RunStore runStore, @Autowired OrganizationService service) {
+    public LiveTestRuns(@Autowired RunStore runStore, @Autowired OrganizationService service) {
         Grid<Run> grid = new Grid<>();
-        dataProvider = new ListDataProvider<>(runStore.getLiveRuns());
-        grid.setDataProvider(dataProvider);
         grid.addComponentColumn(run -> new NativeButton(run.getId(), evt -> {})).setHeader("ID");
         grid.addColumn((ValueProvider<Run, Integer>) run -> run.getResults().size()).setHeader("CcTest Count");
         grid.addColumn(
@@ -42,6 +41,9 @@ public class TestRuns extends VerticalLayout implements DataListener {
         ).setHeader("Start");
         grid.addColumn(new IconRenderer<>(this::getIcon, item -> "")).setHeader("Status");
         runStore.registerListener(this);
+
+        dataProvider = new ListDataProvider<>(runStore.getLiveRuns());
+        grid.setDataProvider(dataProvider);
 
         add(grid);
     }

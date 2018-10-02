@@ -50,4 +50,16 @@ public class RunStore {
             dataListener.dataChanged();
         }
     }
+
+    public boolean containsId(String runId) {
+        boolean runExists = false;
+        for(Run run : activeRuns.values()) {
+            if(run.getId().equals(run)) {
+                runExists = true;
+                break;
+            }
+        }
+
+        return runExists;
+    }
 }

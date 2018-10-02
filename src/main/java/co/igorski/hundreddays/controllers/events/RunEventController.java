@@ -30,7 +30,13 @@ public class RunEventController {
 
     @PostMapping
     @RequestMapping("/started")
-    public ResponseEntity<Run> runStarted(@RequestBody RunStarted runStartedEvent) {
+    public ResponseEntity runStarted(@RequestBody RunStarted runStartedEvent) {
+        if(runStartedEvent.getTimestamp() == null) {
+            return new ResponseEntity<>("Timestamp must not be empty.", HttpStatus.BAD_REQUEST);
+        }
+        if(runStartedEvent.getTests().size() == 0) {
+            return new ResponseEntity<>("Tests must be present.", HttpStatus.BAD_REQUEST);
+        }
         Run run = runService.startRun(runStartedEvent);
         return new ResponseEntity<>(run, HttpStatus.CREATED);
     }
