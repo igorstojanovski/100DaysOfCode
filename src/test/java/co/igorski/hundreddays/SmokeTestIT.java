@@ -1,9 +1,9 @@
 package co.igorski.hundreddays;
 
 import co.igorski.hundreddays.model.CcTest;
+import co.igorski.hundreddays.model.Entry;
 import co.igorski.hundreddays.model.Organization;
 import co.igorski.hundreddays.model.Outcome;
-import co.igorski.hundreddays.model.Result;
 import co.igorski.hundreddays.model.Run;
 import co.igorski.hundreddays.model.Status;
 import co.igorski.hundreddays.model.User;
@@ -97,8 +97,8 @@ public class SmokeTestIT {
         restTemplate.postForEntity("/event/test/finished", testTwoFinished, CcTest.class);
         restTemplate.postForEntity("/event/test/finished", testOneFinished, CcTest.class);
 
-        await().atMost(5, SECONDS).until(() -> getCurrentResults().get(0).getStatus() == Status.FINISHED);
-        await().atMost(5, SECONDS).until(() -> getCurrentResults().get(1).getStatus() == Status.FINISHED);
+        await().atMost(5, SECONDS).until(() -> getCurrentResults().get(0).getResult().getStatus() == Status.FINISHED);
+        await().atMost(5, SECONDS).until(() -> getCurrentResults().get(1).getResult().getStatus() == Status.FINISHED);
 
         RunFinished runFinished = new RunFinished();
         runFinished.setRunId(runId);
@@ -111,12 +111,12 @@ public class SmokeTestIT {
         return restTemplate.getForEntity("/run", Run[].class);
     }
 
-    private List<Result> getCurrentResults() {
+    private List<Entry> getCurrentResults() {
         ResponseEntity<Run[]> activeRunsResponse = restTemplate.getForEntity("/run", Run[].class);
         assertThat(activeRunsResponse.getBody()).hasSize(1);
         Run activeRun = activeRunsResponse.getBody()[0];
-        List<Result> currentResults = activeRun.getResults();
-        assertThat(currentResults).hasSize(2);
-        return currentResults;
+        List<Entry> entries = activeRun.getEntries();
+        assertThat(entries).hasSize(2);
+        return entries;
     }
 }

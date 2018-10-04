@@ -20,7 +20,7 @@ public class TestRuns extends VerticalLayout {
     public TestRuns(@Autowired PageableDataProvider<Run, Void> pageableDataProvider) {
         Grid<Run> grid = new Grid<>();
         grid.addComponentColumn(run -> new RouterLink(run.getId(), SingleRun.class, run.getId())).setHeader("ID");
-        grid.addColumn((ValueProvider<Run, Integer>) run -> run.getResults().size()).setHeader("CcTest Count");
+        grid.addColumn((ValueProvider<Run, Integer>) run -> run.getEntries().size()).setHeader("CcTest Count");
         grid.addColumn(
                 new LocalDateTimeRenderer<>(
                         run -> run.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),

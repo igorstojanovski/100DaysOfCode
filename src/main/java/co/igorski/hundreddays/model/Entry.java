@@ -3,20 +3,16 @@ package co.igorski.hundreddays.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Document
-public class Result {
-    @Id
-    private String id;
-    private Outcome outcome;
-    private Status status;
-    private Date start;
-    private Date end;
+public class Entry {
+    private String testId;
+    private Result result;
+    @Transient
+    private CcTest test;
 }

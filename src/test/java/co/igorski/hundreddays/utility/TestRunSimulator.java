@@ -56,6 +56,7 @@ public class TestRunSimulator {
         testFinishedEvents.clear();
         testStartedEvents.clear();
     }
+
     @Test
     public void shouldSimulateWholeRun() throws InterruptedException {
         Organization organization = new Organization();
@@ -95,6 +96,7 @@ public class TestRunSimulator {
 
         RunFinished runFinished = new RunFinished();
         runFinished.setRunId(runId);
+        runFinished.setTimestamp(new Date());
 
         Thread.sleep(getMillis());
         restTemplate.postForEntity(RUN_FINISHED, runFinished, Run.class);

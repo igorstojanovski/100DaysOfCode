@@ -1,8 +1,9 @@
 package co.igorski.hundreddays.web;
 
-import co.igorski.hundreddays.model.Result;
+import co.igorski.hundreddays.model.Entry;
 import co.igorski.hundreddays.model.Run;
 import co.igorski.hundreddays.repositories.RunRepository;
+import co.igorski.hundreddays.services.TestService;
 import co.igorski.hundreddays.stores.RunStore;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -22,13 +23,15 @@ public class ResultsView extends VerticalLayout implements HasUrlParameter<Strin
 
     private final RunRepository runRepository;
     private final RunStore runStore;
+    private final TestService testService;
     private String runId;
-    private final Grid<Result> grid;
+    private final Grid<Entry> grid;
 
     @Autowired
-    public ResultsView(RunRepository runRepository, RunStore runStore) {
+    public ResultsView(RunRepository runRepository, RunStore runStore, TestService testService) {
         this.runRepository = runRepository;
         this.runStore = runStore;
+        this.testService = testService;
         grid = new Grid<>();
         add(grid);
     }
@@ -42,11 +45,11 @@ public class ResultsView extends VerticalLayout implements HasUrlParameter<Strin
     public void afterNavigation(AfterNavigationEvent event) {
         if(!runStore.containsId(runId)) {
             Run run = runRepository.findById(runId).get();
-            grid.setDataProvider(new ListDataProvider<>(run.getResults()));
+            grid.setDataProvider(new ListDataProvider<>(run.getEntries()));
         }
 
-        grid.addColumn(item -> item.getTest().getTestName()).setHeader("Test Name");
-        grid.addColumn(Result::getStatus).setHeader("Status");
-        grid.addColumn(Result::getOutcome).setHeader("Outcome");
+        grid.addColumn(entry -> testService.getTest(entry.getTestId()).getTestName()).setHeader("Test Name");
+        grid.addColumn(entry -> entry.getResult().getStatus()).setHeader("Status");
+        grid.addColumn(entry -> entry.getResult().getOutcome()).setHeader("Outcome");
     }
 }

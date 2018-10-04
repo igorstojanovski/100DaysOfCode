@@ -1,5 +1,6 @@
 package co.igorski.hundreddays.services;
 
+import co.igorski.hundreddays.model.Entry;
 import co.igorski.hundreddays.model.Result;
 import co.igorski.hundreddays.model.Run;
 import co.igorski.hundreddays.model.events.Event;
@@ -28,13 +29,13 @@ public class RunService {
 
     private RunStore runStore;
     private RunRepository runRepository;
-    private ResultService resultService;
+    private EntryService entryService;
 
     @Autowired
-    public RunService(RunStore runStore, RunRepository runRepository, ResultService resultService) {
+    public RunService(RunStore runStore, RunRepository runRepository, EntryService entryService) {
         this.runStore = runStore;
         this.runRepository = runRepository;
-        this.resultService = resultService;
+        this.entryService = entryService;
     }
 
     @KafkaListener(topics = "test-events", groupId = "run")
@@ -51,7 +52,7 @@ public class RunService {
         run.setOrganizationId(runStartedEvent.getOrganization().getId());
         run.setStart(runStartedEvent.getTimestamp());
         run.setUserId(runStartedEvent.getUser().getId());
-        run.setResults(resultService.addResults(runStartedEvent));
+        run.setEntries(entryService.createEntries(runStartedEvent));
 
         Run created = runRepository.save(run);
         runStore.activateRun(created);
@@ -80,18 +81,18 @@ public class RunService {
         return (int) runRepository.findAll().size();
     }
 
-    public List<Result> getRunResults(String runId) {
+    public List<Entry> getEntries(String runId) {
         Optional<Run> runOptional = runRepository.findById(runId);
-        List<Result> results = new ArrayList<>();
+        List<Entry> entries = new ArrayList<>();
         if(runOptional.isPresent()) {
-            results = runOptional.get().getResults();
+            entries = runOptional.get().getEntries();
         }
-        return results;
+        return entries;
     }
 
     public String getFormattedTestDuration(Result result) {
-        LocalDateTime start = result.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        LocalDateTime end = result.getEnd().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime start = getLocalDateTime(result.getStart());
+        LocalDateTime end = getLocalDateTime(result.getEnd());
 
         Duration duration = Duration.between(start, end);
         long millis = duration.toMillis();
@@ -102,5 +103,14 @@ public class RunService {
                         TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
                 TimeUnit.MILLISECONDS.toSeconds(millis) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+    }
+
+    private LocalDateTime getLocalDateTime(Date time) {
+        LocalDateTime localDateTime = null;
+        if(time != null) {
+            localDateTime = time.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        }
+
+        return localDateTime;
     }
 }
