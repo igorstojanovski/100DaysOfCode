@@ -12,6 +12,8 @@ import co.igorski.hundreddays.repositories.TestRepository;
 import co.igorski.hundreddays.stores.RunStore;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -108,5 +110,13 @@ public class TestService {
 
     public CcTest getTest(String testId) {
         return testRepository.findById(testId).get();
+    }
+
+    public Page<CcTest> getAllTests(Pageable pageable) {
+        return testRepository.findAll(pageable);
+    }
+
+    public Object countAll() {
+        return testRepository.findAll();
     }
 }

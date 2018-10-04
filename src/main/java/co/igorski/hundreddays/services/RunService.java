@@ -12,6 +12,9 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +27,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
 @Service
 public class RunService {
-
+    @Autowired
+    private MongoTemplate mongoTemplate;
     private RunStore runStore;
     private RunRepository runRepository;
     private EntryService entryService;
@@ -112,5 +118,13 @@ public class RunService {
         }
 
         return localDateTime;
+    }
+
+    public List<Run> getParticipatingRuns(String testId) {
+        Criteria criteriaOne = where("entries.testId").is(testId);
+        Criteria fieldCriteria = where("entries").elemMatch(where("testId").is(testId));
+        BasicQuery basicQuery = new BasicQuery(criteriaOne.getCriteriaObject(), fieldCriteria.getCriteriaObject());
+
+        return mongoTemplate.find(basicQuery, Run.class);
     }
 }

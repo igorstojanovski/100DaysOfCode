@@ -13,6 +13,7 @@ import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static co.igorski.hundreddays.model.Outcome.PASSED;
@@ -30,7 +31,8 @@ public class SingleRun extends VerticalLayout implements HasUrlParameter<String>
         this.testService  = testService;
 
         grid = new Grid<>();
-        grid.addColumn(entry -> testService.getTest(entry.getTestId()).getTestName()).setHeader("Test");
+        grid.addComponentColumn(entry -> new RouterLink(testService.getTest(entry.getTestId()).getTestName(),
+                SingleTest.class, entry.getTestId())).setHeader("Test");
         grid.addComponentColumn(entry -> {
             Label label = new Label(entry.getResult().getOutcome().toString());
             if(PASSED.equals(entry.getResult().getOutcome())) {
