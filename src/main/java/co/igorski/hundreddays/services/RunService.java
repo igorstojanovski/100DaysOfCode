@@ -1,5 +1,6 @@
 package co.igorski.hundreddays.services;
 
+import co.igorski.hundreddays.model.Entry;
 import co.igorski.hundreddays.model.Result;
 import co.igorski.hundreddays.model.Run;
 import co.igorski.hundreddays.model.events.Event;
@@ -11,6 +12,9 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -23,18 +27,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
 @Service
 public class RunService {
-
+    @Autowired
+    private MongoTemplate mongoTemplate;
     private RunStore runStore;
     private RunRepository runRepository;
-    private ResultService resultService;
+    private EntryService entryService;
 
     @Autowired
-    public RunService(RunStore runStore, RunRepository runRepository, ResultService resultService) {
+    public RunService(RunStore runStore, RunRepository runRepository, EntryService entryService) {
         this.runStore = runStore;
         this.runRepository = runRepository;
-        this.resultService = resultService;
+        this.entryService = entryService;
     }
 
     @KafkaListener(topics = "test-events", groupId = "run")
@@ -51,7 +58,7 @@ public class RunService {
         run.setOrganizationId(runStartedEvent.getOrganization().getId());
         run.setStart(runStartedEvent.getTimestamp());
         run.setUserId(runStartedEvent.getUser().getId());
-        run.setResults(resultService.addResults(runStartedEvent));
+        run.setEntries(entryService.createEntries(runStartedEvent));
 
         Run created = runRepository.save(run);
         runStore.activateRun(created);
@@ -80,18 +87,18 @@ public class RunService {
         return (int) runRepository.findAll().size();
     }
 
-    public List<Result> getRunResults(String runId) {
+    public List<Entry> getEntries(String runId) {
         Optional<Run> runOptional = runRepository.findById(runId);
-        List<Result> results = new ArrayList<>();
+        List<Entry> entries = new ArrayList<>();
         if(runOptional.isPresent()) {
-            results = runOptional.get().getResults();
+            entries = runOptional.get().getEntries();
         }
-        return results;
+        return entries;
     }
 
     public String getFormattedTestDuration(Result result) {
-        LocalDateTime start = result.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        LocalDateTime end = result.getEnd().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime start = getLocalDateTime(result.getStart());
+        LocalDateTime end = getLocalDateTime(result.getEnd());
 
         Duration duration = Duration.between(start, end);
         long millis = duration.toMillis();
@@ -102,5 +109,22 @@ public class RunService {
                         TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
                 TimeUnit.MILLISECONDS.toSeconds(millis) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+    }
+
+    private LocalDateTime getLocalDateTime(Date time) {
+        LocalDateTime localDateTime = null;
+        if(time != null) {
+            localDateTime = time.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        }
+
+        return localDateTime;
+    }
+
+    public List<Run> getParticipatingRuns(String testId) {
+        Criteria criteriaOne = where("entries.testId").is(testId);
+        Criteria fieldCriteria = where("entries").elemMatch(where("testId").is(testId));
+        BasicQuery basicQuery = new BasicQuery(criteriaOne.getCriteriaObject(), fieldCriteria.getCriteriaObject());
+
+        return mongoTemplate.find(basicQuery, Run.class);
     }
 }

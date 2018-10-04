@@ -1,6 +1,7 @@
 package co.igorski.hundreddays.services;
 
 import co.igorski.hundreddays.model.CcTest;
+import co.igorski.hundreddays.model.Entry;
 import co.igorski.hundreddays.model.Result;
 import co.igorski.hundreddays.model.Run;
 import co.igorski.hundreddays.model.Status;
@@ -11,12 +12,14 @@ import co.igorski.hundreddays.repositories.TestRepository;
 import co.igorski.hundreddays.stores.RunStore;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class TestService {
@@ -36,7 +39,7 @@ public class TestService {
     @KafkaListener(topics = "test-events", groupId = "test")
     public void eventListener(ConsumerRecord<String, Event> cr) {
         Event event = cr.value();
-        System.out.println("TEST Service received event: " + event.getClass());
+
         if(event instanceof TestStarted) {
             testStarted((TestStarted) event);
         } else if(event instanceof TestFinished) {
@@ -77,12 +80,13 @@ public class TestService {
     }
 
     private Result getTestResult(Run run, CcTest test) {
-        Collection<Result> results = run.getResults();
+
+        List<Entry> entries = run.getEntries();
         Result result = null;
 
-        for(Result testResult : results) {
-            if(testResult.getTest().equals(test)) {
-                result = testResult;
+        for(Entry entry : entries) {
+            if(entry.getTest().equals(test)) {
+                result = entry.getResult();
                 break;
             }
         }
@@ -102,5 +106,17 @@ public class TestService {
         }
 
         return markedFinished;
+    }
+
+    public CcTest getTest(String testId) {
+        return testRepository.findById(testId).get();
+    }
+
+    public Page<CcTest> getAllTests(Pageable pageable) {
+        return testRepository.findAll(pageable);
+    }
+
+    public Object countAll() {
+        return testRepository.findAll();
     }
 }

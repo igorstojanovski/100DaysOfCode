@@ -44,7 +44,6 @@ class TestServiceTest {
 
         List<Result> results = new ArrayList<>();
         Result result = new Result();
-        result.setTest(theTest);
         result.setStatus(Status.RUNNING);
         results.add(result);
 
@@ -52,7 +51,6 @@ class TestServiceTest {
         run.setId("runId");
         run.setStart(new Date());
         run.setOrganizationId("orgId");
-        run.setResults(results);
     }
 
     @Test
@@ -67,8 +65,8 @@ class TestServiceTest {
 
         testService.testStarted(testStarted);
 
-        assertThat(run.getResults().get(0).getStatus()).isEqualTo(Status.RUNNING);
-        assertThat(run.getResults().get(0).getStart()).isNotNull();
+        assertThat(run.getEntries().get(0).getResult().getStatus()).isEqualTo(Status.RUNNING);
+        assertThat(run.getEntries().get(0).getResult().getStart()).isNotNull();
     }
 
     @Test
@@ -84,9 +82,9 @@ class TestServiceTest {
 
         testService.testFinished(testFinished);
 
-        assertThat(run.getResults().get(0).getStatus()).isEqualTo(Status.FINISHED);
-        assertThat(run.getResults().get(0).getOutcome()).isEqualTo(Outcome.PASSED);
-        assertThat(run.getResults().get(0).getEnd()).isNotNull();
+        assertThat(run.getEntries().get(0).getResult().getStatus()).isEqualTo(Status.FINISHED);
+        assertThat(run.getEntries().get(0).getResult().getOutcome()).isEqualTo(Outcome.PASSED);
+        assertThat(run.getEntries().get(0).getResult().getEnd()).isNotNull();
     }
 
     @Test
