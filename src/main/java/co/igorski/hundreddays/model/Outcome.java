@@ -2,6 +2,6 @@ package co.igorski.hundreddays.model;
 
 public enum Outcome {
 
-    FAILED, PASSED
+    FAILED, PASSED, UNKNOWN
 
 }

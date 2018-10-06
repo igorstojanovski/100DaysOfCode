@@ -100,6 +100,10 @@ public class RunService {
         LocalDateTime start = getLocalDateTime(result.getStart());
         LocalDateTime end = getLocalDateTime(result.getEnd());
 
+        if(start == null || end == null) {
+            return "";
+        }
+
         Duration duration = Duration.between(start, end);
         long millis = duration.toMillis();
 
