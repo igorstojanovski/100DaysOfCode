@@ -15,8 +15,8 @@ import java.util.Date;
 public class Result {
     @Id
     private String id;
-    private Outcome outcome;
-    private Status status;
+    private Outcome outcome = Outcome.UNKNOWN;
+    private Status status = Status.QUEUED;
     private Date start;
     private Date end;
 }

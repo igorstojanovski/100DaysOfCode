@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static co.igorski.hundreddays.model.Outcome.PASSED;
 
-@Route("runs")
+@Route("test")
 public class SingleTest extends VerticalLayout implements HasUrlParameter<String>, AfterNavigationObserver {
 
     private final RunService runService;

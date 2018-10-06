@@ -64,7 +64,7 @@ public class RunStore {
     public boolean containsId(String runId) {
         boolean runExists = false;
         for(Run run : activeRuns.values()) {
-            if(run.getId().equals(run)) {
+            if(run.getId().equals(runId)) {
                 runExists = true;
                 break;
             }
