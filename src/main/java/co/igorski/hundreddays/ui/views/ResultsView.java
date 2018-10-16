@@ -1,4 +1,4 @@
-package co.igorski.hundreddays.web;
+package co.igorski.hundreddays.ui.views;
 
 import co.igorski.hundreddays.model.Entry;
 import co.igorski.hundreddays.model.Run;
@@ -17,7 +17,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.shared.ui.Transport;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Route("results")
+@Route("Results")
 @Push(transport = Transport.LONG_POLLING)
 public class ResultsView extends VerticalLayout implements HasUrlParameter<String>, AfterNavigationObserver {
 

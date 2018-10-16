@@ -1,8 +1,10 @@
-package co.igorski.hundreddays.web.routes;
+package co.igorski.hundreddays.ui.views.run;
 
 import co.igorski.hundreddays.model.Entry;
 import co.igorski.hundreddays.services.RunService;
 import co.igorski.hundreddays.services.TestService;
+import co.igorski.hundreddays.ui.views.layouts.BreadCrumbedView;
+import co.igorski.hundreddays.ui.views.test.SingleTest;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -18,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static co.igorski.hundreddays.model.Outcome.PASSED;
 
-@Route("Run")
+@Route(value = "Run", layout = BreadCrumbedView.class)
 public class SingleRun extends VerticalLayout implements HasUrlParameter<String>, AfterNavigationObserver {
 
     private final RunService runService;

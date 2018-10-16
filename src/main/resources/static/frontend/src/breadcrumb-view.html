@@ -1,0 +1,32 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="menu/main-menu.html">
+
+<dom-module id="breadcrumb-view">
+    <template>
+        <style>
+            :host {
+                height: 100%;
+            }
+
+            #title-div {
+                padding: var(--lumo-space-m) var(--lumo-space-m) 0 var(--lumo-space-m);
+                color: var(--app-menu-color, var(--primary-text-color))
+                text-size: 14px;
+            }
+
+        </style>
+        <div id="title-div"></div>
+        <slot></slot>
+    </template>
+    <script>
+        class BreadcrumbView extends Polymer.Element {
+            static get is() {
+                return 'breadcrumb-view'
+            }
+        }
+
+        customElements.define(BreadcrumbView.is, BreadcrumbView);
+
+
+    </script>
+</dom-module>

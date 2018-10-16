@@ -3,7 +3,7 @@ package co.igorski.hundreddays.stores;
 import co.igorski.hundreddays.model.Run;
 import co.igorski.hundreddays.model.events.Event;
 import co.igorski.hundreddays.model.events.RunFinished;
-import co.igorski.hundreddays.web.DataListener;
+import co.igorski.hundreddays.ui.DataListener;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;

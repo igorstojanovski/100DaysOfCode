@@ -1,6 +1,7 @@
-package co.igorski.hundreddays.web.routes;
+package co.igorski.hundreddays.ui.views.run;
 
 import co.igorski.hundreddays.model.Run;
+import co.igorski.hundreddays.ui.views.layouts.BreadCrumbedView;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
@@ -14,7 +15,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
-@Route("runs")
+@Route(value = "Runs", layout = BreadCrumbedView.class)
 public class TestRuns extends VerticalLayout {
 
     public TestRuns(@Autowired PageableDataProvider<Run, Void> pageableDataProvider) {

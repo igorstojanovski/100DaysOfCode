@@ -1,4 +1,4 @@
-package co.igorski.hundreddays.web.dataproviders;
+package co.igorski.hundreddays.ui.dataproviders;
 
 import co.igorski.hundreddays.model.Run;
 import co.igorski.hundreddays.repositories.RunRepository;
