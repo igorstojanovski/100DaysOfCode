@@ -3,23 +3,32 @@ package co.igorski.hundreddays.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@Document
+@Entity
 public class Run {
     @Id
-    private String id;
-    private String userId;
-    private String organizationId;
-    private Date start;
-    private Date end;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @ManyToOne
+    private User user;
+    @ManyToOne
+    private Organization organization;
+    private Date startTime;
+    private Date endTime;
+    @ElementCollection(targetClass = Entry.class, fetch = FetchType.EAGER)
     private List<Entry> entries;
 
 }

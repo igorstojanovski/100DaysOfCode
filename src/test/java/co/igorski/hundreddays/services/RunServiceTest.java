@@ -1,6 +1,7 @@
 package co.igorski.hundreddays.services;
 
 import co.igorski.hundreddays.model.Run;
+import co.igorski.hundreddays.repositories.ResultRepository;
 import co.igorski.hundreddays.repositories.RunRepository;
 import co.igorski.hundreddays.stores.RunStore;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,10 +30,12 @@ class RunServiceTest {
     @Captor
     ArgumentCaptor<Run> runCaptor;
     private RunService runService;
+    @Mock
+    private ResultRepository resultRepository;
 
     @BeforeEach
     public void beforeEach() {
-        runService = new RunService(runStore, runRepository, entryService);
+        runService = new RunService(runStore, runRepository, entryService, resultRepository);
     }
 
     @Test
@@ -84,8 +87,8 @@ class RunServiceTest {
 //
 //        Run capturedRun = runCaptor.getValue();
 //
-//        assertThat(capturedRun.getStart()).isEqualTo(currentDate);
-//        assertThat(capturedRun.getOrganizationId()).isEqualTo("O1");
+//        assertThat(capturedRun.getStartTime()).isEqualTo(currentDate);
+//        assertThat(capturedRun.getOrganization()).isEqualTo("O1");
 //        assertThat(capturedRun.getUserId()).isEqualTo("U1");
 //
 //        List<Result> capturedResults = capturedRun.getResults();

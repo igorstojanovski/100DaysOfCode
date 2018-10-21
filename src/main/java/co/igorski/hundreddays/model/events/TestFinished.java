@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class TestFinished extends Event {
-    private String runId;
+    private Long runId;
     private CcTest test;
     private Outcome outcome;
 }

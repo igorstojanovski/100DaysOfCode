@@ -60,13 +60,13 @@ public class TestRunSimulator {
     @Test
     public void shouldSimulateWholeRun() throws InterruptedException {
         Organization organization = new Organization();
-        organization.setId("5b943fbd6e644024f4cab9e2");
+        organization.setId(1L);
 
         User user = new User();
         user.setName("Igor");
         user.setUsername("igorski");
-        user.setId("5b94464d6e6440221810064c");
-        user.setOrganizationId("5b943fbd6e644024f4cab9e2");
+        user.setId(2L);
+        user.setOrganization(organization);
 
         // ----------- CREATE TESTS -----------------
         generateTests(RANDOM.nextInt(9) + 1);
@@ -79,8 +79,8 @@ public class TestRunSimulator {
         runStarted.setTimestamp(new Date());
 
         ResponseEntity<Run> runResponseEntity = restTemplate.postForEntity(RUN_STARTED, runStarted, Run.class);
-        String runId = runResponseEntity.getBody().getId();
-
+        Long runId = runResponseEntity.getBody().getId();
+        System.out.println("Run ID: " + runId);
         // ----------- START TESTS -----------------
 
         generateTestStartedEvents(runId);
@@ -126,7 +126,7 @@ public class TestRunSimulator {
         }
     }
 
-    private void generateTestStartedEvents(String runId) {
+    private void generateTestStartedEvents(Long runId) {
         for(CcTest test : tests) {
             TestStarted testStarted = new TestStarted();
             testStarted.setRunId(runId);
@@ -137,7 +137,7 @@ public class TestRunSimulator {
         }
     }
 
-    private void generateTestFinishedEvents(String runId) {
+    private void generateTestFinishedEvents(Long runId) {
         for(CcTest test : tests) {
             TestFinished testFinished = new TestFinished();
             testFinished.setRunId(runId);

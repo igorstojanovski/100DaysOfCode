@@ -3,20 +3,23 @@ package co.igorski.hundreddays.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@Document
+@Entity
 public class Result {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Outcome outcome = Outcome.UNKNOWN;
     private Status status = Status.QUEUED;
-    private Date start;
-    private Date end;
+    private Date startTime;
+    private Date endTime;
 }

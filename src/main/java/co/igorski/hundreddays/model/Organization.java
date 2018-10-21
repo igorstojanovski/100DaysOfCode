@@ -3,17 +3,19 @@ package co.igorski.hundreddays.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@Document
+@Entity
 public class Organization {
     @Id
-    private String id;
-    @Indexed(unique=true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
 }

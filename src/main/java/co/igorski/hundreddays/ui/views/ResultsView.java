@@ -24,7 +24,7 @@ public class ResultsView extends VerticalLayout implements HasUrlParameter<Strin
     private final RunRepository runRepository;
     private final RunStore runStore;
     private final TestService testService;
-    private String runId;
+    private Long runId;
     private final Grid<Entry> grid;
 
     @Autowired
@@ -38,7 +38,7 @@ public class ResultsView extends VerticalLayout implements HasUrlParameter<Strin
 
     @Override
     public void setParameter(BeforeEvent event, String parameter) {
-        runId = parameter;
+        runId = Long.parseLong(parameter);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ResultsView extends VerticalLayout implements HasUrlParameter<Strin
             grid.setDataProvider(new ListDataProvider<>(run.getEntries()));
         }
 
-        grid.addColumn(entry -> testService.getTest(entry.getTestId()).getTestName()).setHeader("Test Name");
+        grid.addColumn(entry -> entry.getTest().getTestName()).setHeader("Test Name");
         grid.addColumn(entry -> entry.getResult().getStatus()).setHeader("Status");
         grid.addColumn(entry -> entry.getResult().getOutcome()).setHeader("Outcome");
     }

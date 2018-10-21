@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class RunFinished extends Event {
-    private String runId;
+    private Long runId;
 }

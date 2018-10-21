@@ -23,16 +23,19 @@ import static co.igorski.hundreddays.model.Outcome.PASSED;
 public class SingleTest extends VerticalLayout implements HasUrlParameter<String>, AfterNavigationObserver {
 
     private final RunService runService;
-    private String testId;
+    private Long testId;
     private final Grid<Run> grid;
 
     @Autowired
     public SingleTest(RunService runService) {
         this.runService = runService;
         grid = new Grid<>();
-        grid.addComponentColumn(run -> new RouterLink(run.getId(), SingleRun.class, run.getId())).setHeader("ID");
-        grid.addColumn(run -> run.getEntries().get(0).getResult().getStart()).setHeader("Start");
-        grid.addColumn(run -> run.getEntries().get(0).getResult().getEnd()).setHeader("End");
+        grid.addComponentColumn(run -> {
+            String id = String.valueOf(run.getId());
+            return new RouterLink(id, SingleRun.class, id);
+        }).setHeader("ID");
+        grid.addColumn(run -> run.getEntries().get(0).getResult().getStartTime()).setHeader("Start");
+        grid.addColumn(run -> run.getEntries().get(0).getResult().getEndTime()).setHeader("End");
         grid.addComponentColumn(run -> {
             Outcome outcome = run.getEntries().get(0).getResult().getOutcome();
             Label label = new Label(outcome.toString());
@@ -49,7 +52,7 @@ public class SingleTest extends VerticalLayout implements HasUrlParameter<String
 
     @Override
     public void setParameter(BeforeEvent event, String parameter) {
-        testId = parameter;
+        testId = Long.parseLong(parameter);
     }
 
     @Override

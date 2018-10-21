@@ -25,7 +25,7 @@ import java.util.Map;
 public class RunStore {
     @Autowired
     private KafkaTemplate<String, Event> template;
-    private final Map<String, Run> activeRuns = new HashMap<>();
+    private final Map<Long, Run> activeRuns = new HashMap<>();
     private final List<DataListener> listeners = new ArrayList<>();
 
     public void activateRun(Run created) {
@@ -33,7 +33,7 @@ public class RunStore {
         notifyAllListeners();
     }
 
-    public Run deactivateRun(String runId) {
+    public Run deactivateRun(Long runId) {
         Run run = activeRuns.remove(runId);
         notifyAllListeners();
         return run;
@@ -47,7 +47,7 @@ public class RunStore {
         return activeRuns.values();
     }
 
-    public Run getRun(String runId) {
+    public Run getRun(Long runId) {
         return activeRuns.get(runId);
     }
 
@@ -61,7 +61,7 @@ public class RunStore {
         }
     }
 
-    public boolean containsId(String runId) {
+    public boolean containsId(Long runId) {
         boolean runExists = false;
         for(Run run : activeRuns.values()) {
             if(run.getId().equals(runId)) {
@@ -76,7 +76,7 @@ public class RunStore {
     @Scheduled(fixedRate = 10000)
     public void reportCurrentTime() {
         for(Run run : activeRuns.values()) {
-            LocalDateTime runLocalDateTime = run.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            LocalDateTime runLocalDateTime = run.getStartTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
             if(runLocalDateTime.isBefore(LocalDateTime.now().minusMinutes(3))) {
                 RunFinished testFinished = new RunFinished();
                 testFinished.setRunId(run.getId());

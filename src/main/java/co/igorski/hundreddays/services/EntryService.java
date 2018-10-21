@@ -5,6 +5,7 @@ import co.igorski.hundreddays.model.Entry;
 import co.igorski.hundreddays.model.Result;
 import co.igorski.hundreddays.model.Status;
 import co.igorski.hundreddays.model.events.RunStarted;
+import co.igorski.hundreddays.repositories.EntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,8 @@ public class EntryService {
 
     @Autowired
     private TestService testService;
+    @Autowired
+    private EntryRepository entryRepository;
 
     public List<Entry> createEntries(RunStarted runStartedEvent) {
         List<Entry> entries = new ArrayList<>();
@@ -27,10 +30,10 @@ public class EntryService {
             Entry entry = new Entry();
             entry.setResult(result);
             CcTest orCreate = testService.getOrCreate(test);
-            entry.setTestId(orCreate.getId());
+            entry.setTest(orCreate);
             entry.setTest(orCreate);
 
-            entries.add(entry);
+            entries.add(entryRepository.save(entry));
         }
         return entries;
     }

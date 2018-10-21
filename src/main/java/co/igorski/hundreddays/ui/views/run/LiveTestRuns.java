@@ -29,11 +29,12 @@ public class LiveTestRuns extends VerticalLayout implements DataListener {
 
     public LiveTestRuns(@Autowired RunStore runStore, @Autowired OrganizationService service) {
         Grid<Run> grid = new Grid<>();
-        grid.addComponentColumn(run -> new NativeButton(run.getId(), evt -> {})).setHeader("ID");
+        grid.addComponentColumn(run -> new NativeButton(String.valueOf(run.getId()), evt -> {
+        })).setHeader("ID");
         grid.addColumn((ValueProvider<Run, Integer>) run -> run.getEntries().size()).setHeader("CcTest Count");
         grid.addColumn(
                 new LocalDateTimeRenderer<>(
-                        run -> run.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+                        run -> run.getStartTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
                         DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)
                 )
         ).setHeader("Start");
@@ -49,7 +50,7 @@ public class LiveTestRuns extends VerticalLayout implements DataListener {
     private Icon getIcon(Run run) {
         Icon icon;
 
-        if(run.getEnd() == null) {
+        if (run.getEndTime() == null) {
             icon = VaadinIcon.PLAY.create();
             icon.setColor("green");
         } else {
@@ -62,13 +63,15 @@ public class LiveTestRuns extends VerticalLayout implements DataListener {
 
     @Override
     public void dataChanged() {
-        UI ui = getUI().get();
-        ui.getSession().lock();
+        if (getUI().isPresent()) {
+            UI ui = getUI().get();
+            ui.getSession().lock();
 
-        try {
-            dataProvider.refreshAll();
-        } finally {
-            ui.getSession().unlock();
+            try {
+                dataProvider.refreshAll();
+            } finally {
+                ui.getSession().unlock();
+            }
         }
     }
 }

@@ -17,12 +17,7 @@ public class OrganizationService {
         return organizationRepository.save(organization);
     }
 
-    public Optional<Organization> getOrganization(String organizationId) {
+    public Optional<Organization> getOrganization(Long organizationId) {
         return organizationRepository.findById(organizationId);
-    }
-
-    Organization validateOrganization(String organizationId) throws DataException {
-        return getOrganization(organizationId)
-                    .orElseThrow(() -> new DataException("No such organization exists."));
     }
 }
