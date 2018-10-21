@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>co.igorski</groupId>
-    <artifactId>100-days-of-code</artifactId>
+    <artifactId>central-committee</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>100-days-of-code</name>
-    <description>Hundred Days of Code</description>
+    <name>Central Committee</name>
+    <description>Central Committee</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
