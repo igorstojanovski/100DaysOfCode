@@ -35,13 +35,13 @@ class RunEventControllerTest {
     @BeforeAll
     public static void beforeAll() {
         organization = new Organization();
-        organization.setId("5b943fbd6e644024f4cab9e2");
+        organization.setId(1234L);
 
         user = new User();
         user.setName("Igor");
         user.setUsername("igorski");
-        user.setId("5b94464d6e6440221810064c");
-        user.setOrganizationId("5b943fbd6e644024f4cab9e2");
+        user.setId(12222L);
+        user.setOrganization(organization);
 
         testOne = new CcTest();
         testOne.setTestName("shouldMarkRunAsStarted");
@@ -80,7 +80,7 @@ class RunEventControllerTest {
     @Test
     public void shouldReturnRunObjectWhenFinished() {
         RunFinished runFinished = new RunFinished();
-        runFinished.setRunId("1");
+        runFinished.setRunId(1L);
 
         Run run = new Run();
         when(runService.endRun(runFinished)).thenReturn(run);

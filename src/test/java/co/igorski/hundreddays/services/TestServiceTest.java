@@ -1,6 +1,7 @@
 package co.igorski.hundreddays.services;
 
 import co.igorski.hundreddays.model.CcTest;
+import co.igorski.hundreddays.model.Organization;
 import co.igorski.hundreddays.model.Outcome;
 import co.igorski.hundreddays.model.Result;
 import co.igorski.hundreddays.model.Run;
@@ -48,9 +49,11 @@ class TestServiceTest {
         results.add(result);
 
         run = new Run();
-        run.setId("runId");
-        run.setStart(new Date());
-        run.setOrganizationId("orgId");
+        run.setId(1L);
+        run.setStartTime(new Date());
+        Organization organization = new Organization();
+        organization.setId(1L);
+        run.setOrganization(organization);
     }
 
     @Test
@@ -59,14 +62,14 @@ class TestServiceTest {
         TestStarted testStarted = new TestStarted();
         testStarted.setTest(theTest);
         testStarted.setTimestamp(new Date());
-        testStarted.setRunId("runId");
+        testStarted.setRunId(1L);
 
-        when(runStore.getRun("runId")).thenReturn(run);
+        when(runStore.getRun(1L)).thenReturn(run);
 
         testService.testStarted(testStarted);
 
         assertThat(run.getEntries().get(0).getResult().getStatus()).isEqualTo(Status.RUNNING);
-        assertThat(run.getEntries().get(0).getResult().getStart()).isNotNull();
+        assertThat(run.getEntries().get(0).getResult().getStartTime()).isNotNull();
     }
 
     @Test
@@ -75,16 +78,16 @@ class TestServiceTest {
         TestFinished testFinished = new TestFinished();
         testFinished.setTest(theTest);
         testFinished.setTimestamp(new Date());
-        testFinished.setRunId("runId");
+        testFinished.setRunId(1L);
         testFinished.setOutcome(Outcome.PASSED);
 
-        when(runStore.getRun("runId")).thenReturn(run);
+        when(runStore.getRun(1L)).thenReturn(run);
 
         testService.testFinished(testFinished);
 
         assertThat(run.getEntries().get(0).getResult().getStatus()).isEqualTo(Status.FINISHED);
         assertThat(run.getEntries().get(0).getResult().getOutcome()).isEqualTo(Outcome.PASSED);
-        assertThat(run.getEntries().get(0).getResult().getEnd()).isNotNull();
+        assertThat(run.getEntries().get(0).getResult().getEndTime()).isNotNull();
     }
 
     @Test

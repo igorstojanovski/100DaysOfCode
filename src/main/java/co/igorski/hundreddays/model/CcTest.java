@@ -4,22 +4,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@Document
 @Cacheable
+@Entity
 public class CcTest {
     @Id
-    private String id;
-    @Indexed(unique=true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String testName;
     @NotNull
     private String testPath;

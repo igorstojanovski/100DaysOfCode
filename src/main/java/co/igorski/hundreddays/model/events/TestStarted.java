@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class TestStarted extends Event {
-    private String runId;
+    private Long runId;
     private CcTest test;
 }

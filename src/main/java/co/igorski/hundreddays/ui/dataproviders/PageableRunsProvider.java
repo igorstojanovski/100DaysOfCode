@@ -1,4 +1,4 @@
-package co.igorski.hundreddays.web.dataproviders;
+package co.igorski.hundreddays.ui.dataproviders;
 
 import co.igorski.hundreddays.model.Run;
 import co.igorski.hundreddays.repositories.RunRepository;
@@ -22,7 +22,7 @@ public class PageableRunsProvider<T, F> extends PageableDataProvider<T, F> {
 
     @Override
     protected Page<Run> fetchFromBackEnd(Query query, Pageable pageable) {
-        return runRepository.findByStartNotNull(pageable);
+        return runRepository.findByEndTimeNotNull(pageable);
     }
 
     @Override
@@ -34,6 +34,6 @@ public class PageableRunsProvider<T, F> extends PageableDataProvider<T, F> {
 
     @Override
     protected int sizeInBackEnd(Query<T, F> query) {
-        return (int) (long) runRepository.countByStartNotNull();
+        return (int) (long) runRepository.countByStartTimeNotNull();
     }
 }

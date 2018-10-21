@@ -3,22 +3,27 @@ package co.igorski.hundreddays.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.lang.NonNull;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@Document
+@Entity
+@Table(name = "app_user")
 public class User {
     @Id
-    private String id;
-    @Indexed(unique=true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(unique = true)
     private String username;
-    @NonNull
     private String name;
-    @NonNull
-    private String organizationId;
+    @ManyToOne
+    private Organization organization;
 }

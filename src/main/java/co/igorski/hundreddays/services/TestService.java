@@ -72,7 +72,7 @@ public class TestService {
         boolean markedStarted = false;
         if(result != null) {
             result.setStatus(Status.RUNNING);
-            result.setStart(new Date());
+            result.setStartTime(new Date());
             markedStarted = true;
         }
 
@@ -101,14 +101,14 @@ public class TestService {
         if(result != null && result.getStatus() == Status.RUNNING) {
             result.setStatus(Status.FINISHED);
             result.setOutcome(testFinished.getOutcome());
-            result.setEnd(new Date());
+            result.setEndTime(new Date());
             markedFinished = true;
         }
 
         return markedFinished;
     }
 
-    public CcTest getTest(String testId) {
+    public CcTest getTest(Long testId) {
         return testRepository.findById(testId).get();
     }
 

@@ -1,8 +1,10 @@
-package co.igorski.hundreddays.web.routes;
+package co.igorski.hundreddays.ui.views.run;
 
 import co.igorski.hundreddays.model.Entry;
 import co.igorski.hundreddays.services.RunService;
 import co.igorski.hundreddays.services.TestService;
+import co.igorski.hundreddays.ui.views.layouts.BreadCrumbedView;
+import co.igorski.hundreddays.ui.views.test.SingleTest;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -18,12 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static co.igorski.hundreddays.model.Outcome.PASSED;
 
-@Route("Run")
+@Route(value = "Run", layout = BreadCrumbedView.class)
 public class SingleRun extends VerticalLayout implements HasUrlParameter<String>, AfterNavigationObserver {
 
     private final RunService runService;
     private final TestService testService;
-    private String runId;
+    private Long runId;
     private final Grid<Entry> grid;
 
     public SingleRun(@Autowired TestService testService, @Autowired RunService runService) {
@@ -31,8 +33,11 @@ public class SingleRun extends VerticalLayout implements HasUrlParameter<String>
         this.testService  = testService;
 
         grid = new Grid<>();
-        grid.addComponentColumn(entry -> new RouterLink(testService.getTest(entry.getTestId()).getTestName(),
-                SingleTest.class, entry.getTestId())).setHeader("Test");
+        grid.addComponentColumn(entry -> {
+            Long testId = entry.getTest().getId();
+            return new RouterLink(testService.getTest(testId).getTestName(),
+                    SingleTest.class, String.valueOf(testId));
+        }).setHeader("Test");
         grid.addComponentColumn(entry -> {
             Label label = new Label(entry.getResult().getOutcome().toString());
             if(PASSED.equals(entry.getResult().getOutcome())) {
@@ -51,7 +56,7 @@ public class SingleRun extends VerticalLayout implements HasUrlParameter<String>
     @Override
     public void setParameter(BeforeEvent event, String parameter) {
         if(event != null) {
-            runId = parameter;
+            runId = Long.parseLong(parameter);
         }
     }
 

@@ -1,8 +1,10 @@
-package co.igorski.hundreddays.web.routes;
+package co.igorski.hundreddays.ui.views.test;
 
 import co.igorski.hundreddays.model.Outcome;
 import co.igorski.hundreddays.model.Run;
 import co.igorski.hundreddays.services.RunService;
+import co.igorski.hundreddays.ui.views.layouts.BreadCrumbedView;
+import co.igorski.hundreddays.ui.views.run.SingleRun;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -17,20 +19,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static co.igorski.hundreddays.model.Outcome.PASSED;
 
-@Route("test")
+@Route(value = "Test", layout = BreadCrumbedView.class)
 public class SingleTest extends VerticalLayout implements HasUrlParameter<String>, AfterNavigationObserver {
 
     private final RunService runService;
-    private String testId;
+    private Long testId;
     private final Grid<Run> grid;
 
     @Autowired
     public SingleTest(RunService runService) {
         this.runService = runService;
         grid = new Grid<>();
-        grid.addComponentColumn(run -> new RouterLink(run.getId(), SingleRun.class, run.getId())).setHeader("ID");
-        grid.addColumn(run -> run.getEntries().get(0).getResult().getStart()).setHeader("Start");
-        grid.addColumn(run -> run.getEntries().get(0).getResult().getEnd()).setHeader("End");
+        grid.addComponentColumn(run -> {
+            String id = String.valueOf(run.getId());
+            return new RouterLink(id, SingleRun.class, id);
+        }).setHeader("ID");
+        grid.addColumn(run -> run.getEntries().get(0).getResult().getStartTime()).setHeader("Start");
+        grid.addColumn(run -> run.getEntries().get(0).getResult().getEndTime()).setHeader("End");
         grid.addComponentColumn(run -> {
             Outcome outcome = run.getEntries().get(0).getResult().getOutcome();
             Label label = new Label(outcome.toString());
@@ -47,7 +52,7 @@ public class SingleTest extends VerticalLayout implements HasUrlParameter<String
 
     @Override
     public void setParameter(BeforeEvent event, String parameter) {
-        testId = parameter;
+        testId = Long.parseLong(parameter);
     }
 
     @Override

@@ -1,9 +1,9 @@
 package co.igorski.hundreddays.repositories;
 
 import co.igorski.hundreddays.model.CcTest;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface TestRepository extends MongoRepository<CcTest, String> {
+public interface TestRepository extends PagingAndSortingRepository<CcTest, Long> {
 
     CcTest findByTestName(String testName);
 

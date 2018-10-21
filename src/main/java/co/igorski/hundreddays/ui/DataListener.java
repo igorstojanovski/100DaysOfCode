@@ -1,4 +1,4 @@
-package co.igorski.hundreddays.web;
+package co.igorski.hundreddays.ui;
 
 public interface DataListener {
     void dataChanged();
