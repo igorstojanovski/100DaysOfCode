@@ -1,4 +1,4 @@
-package co.igorski.centralcommittee.configuration;
+package co.igorski.centralcommittee.configuration.services;
 
 import co.igorski.centralcommittee.model.events.Event;
 import co.igorski.centralcommittee.serialization.EventDeserializer;

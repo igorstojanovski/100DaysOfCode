@@ -2,7 +2,6 @@ package co.igorski.centralcommittee.controllers;
 
 
 import co.igorski.centralcommittee.model.User;
-import co.igorski.centralcommittee.services.DataException;
 import co.igorski.centralcommittee.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,12 +22,8 @@ public class UserController {
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User createdUser;
         ResponseEntity<User> userResponseEntity;
-        try {
-            createdUser = userService.createUser(user);
-            userResponseEntity = new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-        } catch (DataException e) {
-            userResponseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        createdUser = userService.createUser(user);
+        userResponseEntity = new ResponseEntity<>(createdUser, HttpStatus.CREATED);
 
         return userResponseEntity;
     }

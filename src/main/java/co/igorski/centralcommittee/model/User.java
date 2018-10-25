@@ -23,7 +23,9 @@ public class User {
     private Long id;
     @Column(unique = true)
     private String username;
+    private String password;
     private String name;
+    private Role role;
     @ManyToOne
     private Organization organization;
 }
