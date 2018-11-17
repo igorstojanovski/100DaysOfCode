@@ -6,6 +6,7 @@ import co.igorski.centralcommittee.model.Result;
 import co.igorski.centralcommittee.model.Run;
 import co.igorski.centralcommittee.model.Status;
 import co.igorski.centralcommittee.model.events.Event;
+import co.igorski.centralcommittee.model.events.TestDisabled;
 import co.igorski.centralcommittee.model.events.TestFinished;
 import co.igorski.centralcommittee.model.events.TestStarted;
 import co.igorski.centralcommittee.repositories.TestRepository;
@@ -46,9 +47,16 @@ public class TestService {
             if(testFinished((TestFinished) event)) {
                 template.send("test-events", event);
             }
+        } else if (event instanceof TestDisabled) {
+            setTestDisabled((TestDisabled) event);
         }
     }
 
+    private void setTestDisabled(TestDisabled testDisabled) {
+        Run run = runStore.getRun(testDisabled.getRunId());
+        Result result = getTestResult(run, testDisabled.getTest());
+        result.setStatus(Status.DISABLED);
+    }
 
     /**
      * If the {@link CcTest} object exists it will retrieve it from DB if not it will

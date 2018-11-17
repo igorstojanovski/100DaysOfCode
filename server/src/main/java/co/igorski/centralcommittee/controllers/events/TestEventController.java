@@ -2,6 +2,7 @@ package co.igorski.centralcommittee.controllers.events;
 
 import co.igorski.centralcommittee.model.CcTest;
 import co.igorski.centralcommittee.model.events.Event;
+import co.igorski.centralcommittee.model.events.TestDisabled;
 import co.igorski.centralcommittee.model.events.TestFinished;
 import co.igorski.centralcommittee.model.events.TestStarted;
 import co.igorski.centralcommittee.services.TestService;
@@ -30,15 +31,22 @@ public class TestEventController {
 
     @PostMapping
     @RequestMapping("/started")
-    public ResponseEntity<CcTest> runFinishedStarted(@RequestBody TestStarted testStarted) {
+    public ResponseEntity<CcTest> handleTestStartedEvent(@RequestBody TestStarted testStarted) {
         template.send("test-events", testStarted);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @PostMapping
     @RequestMapping("/finished")
-    public ResponseEntity<CcTest> runFinishedHandle(@RequestBody TestFinished testFinished) {
+    public ResponseEntity<CcTest> handleTestFinishedEvent(@RequestBody TestFinished testFinished) {
         template.send("test-events", testFinished);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping
+    @RequestMapping("/disabled")
+    public ResponseEntity<CcTest> handleTestDisabledEvent(@RequestBody TestDisabled testDisabled) {
+        template.send("test-events", testDisabled);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }
