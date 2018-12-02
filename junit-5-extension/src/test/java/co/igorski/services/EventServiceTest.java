@@ -1,17 +1,13 @@
 package co.igorski.services;
 
-import co.igorski.client.BasicHttpHttpClient;
+import co.igorski.client.BasicHttpClient;
 import co.igorski.configuration.Configuration;
 import co.igorski.exceptions.SnitcherException;
 import co.igorski.model.Status;
 import co.igorski.model.TestModel;
 import co.igorski.model.TestRun;
 import co.igorski.model.User;
-import co.igorski.model.events.RunFinished;
-import co.igorski.model.events.RunStarted;
-import co.igorski.model.events.TestDisabled;
-import co.igorski.model.events.TestFinished;
-import co.igorski.model.events.TestStarted;
+import co.igorski.model.events.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +34,7 @@ class EventServiceTest {
     public static final String HTTP_LOCALHOST_8080 = "http://localhost:8080";
     public static final String TEST_CLASS = "co.igorski.tests.EventServiceTest";
     @Mock
-    private BasicHttpHttpClient basicHttpHttpClient;
+    private BasicHttpClient basicHttpHttpClient;
     @Mock
     private Configuration configuration;
     @Captor
@@ -65,10 +61,10 @@ class EventServiceTest {
         two.setTestClass(TEST_CLASS);
         two.setTestName("shouldRepresentTestTwo");
 
-        tests.put(one.uniqueId(), one);
-        tests.put(two.uniqueId(), two);
+        tests.put(one.getTestPath(), one);
+        tests.put(two.getTestPath(), two);
 
-        String url = HTTP_LOCALHOST_8080 + "/events/runStarted";
+        String url = HTTP_LOCALHOST_8080 + "/event/run/started";
         when(basicHttpHttpClient.post(eq(url), anyString())).thenReturn("{\n" +
                 "  \"id\": 1,\n" +
                 "  \"tests\": [\n" +
@@ -106,7 +102,7 @@ class EventServiceTest {
     public void shouldSendCorrectEventFinishedPost() throws IOException, SnitcherException {
         EventService eventService = new EventService(basicHttpHttpClient, configuration);
 
-        String url = HTTP_LOCALHOST_8080 + "/events/runFinished";
+        String url = HTTP_LOCALHOST_8080 + "/event/run/finished";
         when(basicHttpHttpClient.post(eq(url), anyString())).thenReturn("{\n" +
                 "  \"id\": 1,\n" +
                 "  \"tests\": [\n" +

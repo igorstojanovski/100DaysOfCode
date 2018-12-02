@@ -1,6 +1,6 @@
 package co.igorski.services;
 
-import co.igorski.client.HttpClient;
+import co.igorski.client.WebClient;
 import co.igorski.configuration.Configuration;
 import co.igorski.exceptions.SnitcherException;
 import co.igorski.model.User;
@@ -15,11 +15,11 @@ class LoginService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginService.class);
     private final Configuration configuration;
-    private final HttpClient httpClient;
+    private final WebClient webClient;
 
-    LoginService(Configuration configuration, HttpClient httpClient) {
+    LoginService(Configuration configuration, WebClient webClient) {
         this.configuration = configuration;
-        this.httpClient = httpClient;
+        this.webClient = webClient;
     }
 
     User login() {
@@ -29,9 +29,9 @@ class LoginService {
         form.put("password", configuration.getPassword());
 
         try {
-            int responseStatus = httpClient.postForm(configuration.getServerUrl(), form);
+            int responseStatus = webClient.login(configuration.getServerUrl() + "/login", form);
 
-            if(responseStatus == 200) {
+            if (responseStatus == 302) {
                 user = new User();
                 user.setUsername(configuration.getUsername());
             }
