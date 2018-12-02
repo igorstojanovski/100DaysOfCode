@@ -32,6 +32,10 @@ public class CentralCommittee {
 
 		organization = organizationService.createOrganization(organization);
 
+        if (userService.getUser("sinatra") != null) {
+            return;
+        }
+
 		User user = new User();
 		user.setName("Frank");
 		user.setOrganization(organization);

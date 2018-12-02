@@ -15,10 +15,7 @@ public class TestModel {
     private Status status = Status.PENDING;
     private Outcome outcome;
     private String error;
-
-    public String uniqueId() {
-        return testClass + '.' + testName;
-    }
+    private String testPath;
 
     @Override
     public boolean equals(Object o) {

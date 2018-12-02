@@ -1,6 +1,6 @@
 package co.igorski.services;
 
-import co.igorski.client.HttpClient;
+import co.igorski.client.WebClient;
 import co.igorski.configuration.Configuration;
 import co.igorski.exceptions.SnitcherException;
 import co.igorski.model.User;
@@ -25,7 +25,7 @@ class LoginServiceTest {
     @Mock
     private Configuration configuration;
     @Mock
-    private HttpClient httpClient;
+    private WebClient webClient;
     private HashMap<String, String> form;
     private static final String USERNAME = "keysersoze";
     private static final String PASSWORD = "theusualpassword";
@@ -43,25 +43,25 @@ class LoginServiceTest {
 
     @Test
     public void shouldReturnTrueWhenLoginSucceeded() throws IOException, SnitcherException {
-        LoginService loginService = new LoginService(configuration, httpClient);
+        LoginService loginService = new LoginService(configuration, webClient);
 
-        when(httpClient.postForm(HTTP_LOCALHOST_8080, form)).thenReturn(200);
+        when(webClient.login(HTTP_LOCALHOST_8080, form)).thenReturn(200);
 
         User user = loginService.login();
 
-        verify(httpClient).postForm(HTTP_LOCALHOST_8080, form);
+        verify(webClient).login(HTTP_LOCALHOST_8080, form);
         assertThat(user.getUsername()).isEqualTo(USERNAME);
     }
 
     @Test
     public void shouldReturnFalseWhenLoginFailed() throws IOException, SnitcherException {
-        LoginService loginService = new LoginService(configuration, httpClient);
+        LoginService loginService = new LoginService(configuration, webClient);
 
-        when(httpClient.postForm(HTTP_LOCALHOST_8080, form)).thenReturn(401);
+        when(webClient.login(HTTP_LOCALHOST_8080, form)).thenReturn(401);
 
         User user = loginService.login();
 
-        verify(httpClient).postForm(HTTP_LOCALHOST_8080, form);
+        verify(webClient).login(HTTP_LOCALHOST_8080, form);
         assertThat(user).isNull();
     }
 }

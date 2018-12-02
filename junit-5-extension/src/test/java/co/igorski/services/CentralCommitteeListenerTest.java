@@ -1,11 +1,7 @@
 package co.igorski.services;
 
 import co.igorski.exceptions.SnitcherException;
-import co.igorski.model.Outcome;
-import co.igorski.model.Status;
-import co.igorski.model.TestModel;
-import co.igorski.model.TestRun;
-import co.igorski.model.User;
+import co.igorski.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,13 +30,11 @@ import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectPackage;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-class CentralCommitteeServiceTest {
+class CentralCommitteeListenerTest {
     @Mock
     private LoginService loginService;
     @Mock
@@ -67,13 +61,13 @@ class CentralCommitteeServiceTest {
         test.setTestClass("stubs.classes.DummyTest");
 
         tests = new HashMap<>();
-        tests.put(test.uniqueId(), test);
+        tests.put(test.getTestPath(), test);
     }
 
     @Test
     public void shouldLoginAfterTestPlanExecutionIsStarted() {
         TestPlan testPlan = launcher.discover(request);
-        CentralCommitteeService service = new CentralCommitteeService(loginService, eventService);
+        CentralCommitteeListener service = new CentralCommitteeListener(loginService, eventService);
         service.testPlanExecutionStarted(testPlan);
 
         verify(loginService).login();
@@ -82,7 +76,7 @@ class CentralCommitteeServiceTest {
     @Test
     public void shouldSendTestPlanStartedEvent() throws SnitcherException {
         TestPlan testPlan = launcher.discover(request);
-        CentralCommitteeService service = new CentralCommitteeService(loginService, eventService);
+        CentralCommitteeListener service = new CentralCommitteeListener(loginService, eventService);
         User user = new User();
 
         when(loginService.login()).thenReturn(user);
@@ -95,7 +89,7 @@ class CentralCommitteeServiceTest {
     @Test
     public void shouldNotSendEventsIfLoginWasNotSuccessful() throws SnitcherException {
         TestPlan testPlan = launcher.discover(request);
-        CentralCommitteeService service = new CentralCommitteeService(loginService, eventService);
+        CentralCommitteeListener service = new CentralCommitteeListener(loginService, eventService);
 
         when(loginService.login()).thenReturn(null);
 
@@ -107,7 +101,7 @@ class CentralCommitteeServiceTest {
     @Test
     public void shouldSendTestPlanFinishedEvent() throws SnitcherException {
         TestPlan testPlan = launcher.discover(request);
-        CentralCommitteeService service = new CentralCommitteeService(loginService, eventService);
+        CentralCommitteeListener service = new CentralCommitteeListener(loginService, eventService);
 
         User user = new User();
         when(loginService.login()).thenReturn(user);
@@ -125,7 +119,7 @@ class CentralCommitteeServiceTest {
     @Test
     public void shouldSendTestStartedEvent() throws SnitcherException {
         TestPlan testPlan = launcher.discover(request);
-        CentralCommitteeService service = new CentralCommitteeService(loginService, eventService);
+        CentralCommitteeListener service = new CentralCommitteeListener(loginService, eventService);
 
         User user = new User();
         when(loginService.login()).thenReturn(user);
@@ -144,7 +138,7 @@ class CentralCommitteeServiceTest {
     public void shouldSendTestDisabledEvent() throws SnitcherException {
 
         TestPlan testPlan = launcher.discover(request);
-        CentralCommitteeService service = new CentralCommitteeService(loginService, eventService);
+        CentralCommitteeListener service = new CentralCommitteeListener(loginService, eventService);
 
         User user = new User();
         when(loginService.login()).thenReturn(user);
@@ -162,7 +156,7 @@ class CentralCommitteeServiceTest {
     @Test
     public void shouldSendTestFinishedEventWithSuccess() throws SnitcherException {
         TestPlan testPlan = launcher.discover(request);
-        CentralCommitteeService service = new CentralCommitteeService(loginService, eventService);
+        CentralCommitteeListener service = new CentralCommitteeListener(loginService, eventService);
 
         User user = new User();
         when(loginService.login()).thenReturn(user);
@@ -184,7 +178,7 @@ class CentralCommitteeServiceTest {
     @Test
     public void shouldSendTestFinishedEventWithFailure() throws SnitcherException {
         TestPlan testPlan = launcher.discover(request);
-        CentralCommitteeService service = new CentralCommitteeService(loginService, eventService);
+        CentralCommitteeListener service = new CentralCommitteeListener(loginService, eventService);
 
         User user = new User();
         when(loginService.login()).thenReturn(user);
@@ -201,8 +195,8 @@ class CentralCommitteeServiceTest {
 
         assertThat(captured.getStatus()).isEqualTo(Status.FINISHED);
         assertThat(captured.getOutcome()).isEqualTo(Outcome.FAILED);
-        assertThat(captured.getError()).contains("co.igorski.services.CentralCommitteeServiceTest" +
-                ".shouldSendTestFinishedEventWithFailure(CentralCommitteeServiceTest.java:");
+        assertThat(captured.getError()).contains("co.igorski.services.CentralCommitteeListenerTest" +
+                ".shouldSendTestFinishedEventWithFailure(CentralCommitteeListenerTest.java:");
     }
 
     private TestIdentifier getTestIdentifier() {

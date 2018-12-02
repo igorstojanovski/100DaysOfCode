@@ -4,13 +4,7 @@ import co.igorski.exceptions.SnitcherException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -18,14 +12,14 @@ import java.util.Map;
 import java.util.StringJoiner;
 
 /**
- * This implementation uses only Java native classes to implement the {@link HttpClient} interface.
+ * This implementation uses only Java native classes to implement the {@link WebClient} interface.
  */
-public class BasicHttpHttpClient implements HttpClient {
+public class BasicHttpClient implements WebClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BasicHttpHttpClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BasicHttpClient.class);
 
     @Override
-    public int postForm(String target, Map<String, String> form) throws IOException, SnitcherException {
+    public int login(String target, Map<String, String> form) throws IOException, SnitcherException {
 
         if (target == null) {
             throw new SnitcherException("Target must not be null");

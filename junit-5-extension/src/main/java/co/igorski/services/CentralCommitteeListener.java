@@ -1,14 +1,11 @@
 package co.igorski.services;
 
-import co.igorski.client.BasicHttpHttpClient;
+import co.igorski.client.ApacheHttpClient;
+import co.igorski.client.WebClient;
 import co.igorski.configuration.Configuration;
 import co.igorski.configuration.PropertiesConfigurationReader;
 import co.igorski.exceptions.SnitcherException;
-import co.igorski.model.Outcome;
-import co.igorski.model.Status;
-import co.igorski.model.TestModel;
-import co.igorski.model.TestRun;
-import co.igorski.model.User;
+import co.igorski.model.*;
 import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.TestSource;
@@ -19,19 +16,15 @@ import org.junit.platform.launcher.TestPlan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.StringJoiner;
+import java.util.*;
 
 /**
  * The central service that will act as a facade.
  */
-public class CentralCommitteeService implements TestExecutionListener {
+public class CentralCommitteeListener implements TestExecutionListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CentralCommitteeService.class);
-    private static final BasicHttpHttpClient HTTP_CLIENT = new BasicHttpHttpClient();
+    private static final Logger LOG = LoggerFactory.getLogger(CentralCommitteeListener.class);
+    private static final WebClient HTTP_CLIENT = new ApacheHttpClient();
     private static final Configuration CONFIGURATION = new Configuration(new PropertiesConfigurationReader()
             .readProperties("application.properties"));
     private final LoginService loginService;
@@ -40,7 +33,7 @@ public class CentralCommitteeService implements TestExecutionListener {
     private TestRun testRun;
     private Map<String, TestModel> tests;
 
-    public CentralCommitteeService() {
+    public CentralCommitteeListener() {
         this(new LoginService(CONFIGURATION, HTTP_CLIENT), new EventService(HTTP_CLIENT, CONFIGURATION));
     }
 
@@ -50,7 +43,7 @@ public class CentralCommitteeService implements TestExecutionListener {
      * @param loginService handles the login
      * @param eventService handles sending the events
      */
-    public CentralCommitteeService(LoginService loginService, EventService eventService) {
+    public CentralCommitteeListener(LoginService loginService, EventService eventService) {
         this.loginService = loginService;
         this.eventService = eventService;
     }
@@ -175,7 +168,7 @@ public class CentralCommitteeService implements TestExecutionListener {
     private void addTests(Map<String, TestModel> tests, Set<TestIdentifier> children, TestPlan testPlan) {
         for (TestIdentifier testIdentifier : children) {
             if (testIdentifier.getType() == TestDescriptor.Type.TEST) {
-                createTest(testIdentifier).ifPresent(testModel -> tests.put(testModel.uniqueId(), testModel));
+                createTest(testIdentifier).ifPresent(testModel -> tests.put(testModel.getTestPath(), testModel));
             } else if (testIdentifier.getType() == TestDescriptor.Type.CONTAINER) {
                 addTests(tests, testPlan.getChildren(testIdentifier), testPlan);
             }
@@ -197,6 +190,7 @@ public class CentralCommitteeService implements TestExecutionListener {
             MethodSource methodSource = (MethodSource) source.get();
             testModel.setTestName(methodSource.getMethodName());
             testModel.setTestClass(methodSource.getClassName());
+            testModel.setTestPath(methodSource.getClassName() + '.' + methodSource.getMethodName());
             optional = Optional.of(testModel);
         }
 

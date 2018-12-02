@@ -1,9 +1,7 @@
 package co.igorski.exceptions;
 
-import java.io.IOException;
-
 public class SnitcherException extends Exception {
-    public SnitcherException(String message, IOException e) {
+    public SnitcherException(String message, Exception e) {
         super(message, e);
     }
 
