@@ -17,11 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -30,6 +26,9 @@ public class RunService {
     private RunStore runStore;
     private RunRepository runRepository;
     private EntryService entryService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     public RunService(RunStore runStore, RunRepository runRepository, EntryService entryService,
@@ -53,7 +52,7 @@ public class RunService {
         Run run = new Run();
         run.setOrganization(runStartedEvent.getOrganization());
         run.setStartTime(runStartedEvent.getTimestamp());
-        run.setUser(runStartedEvent.getUser());
+        run.setUser(userService.getUser(runStartedEvent.getUser().getUsername()));
         run.setEntries(entryService.createEntries(runStartedEvent));
 
         Run created = runRepository.save(run);

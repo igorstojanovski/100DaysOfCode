@@ -11,15 +11,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(WiremockExtension.class)
-class BasicHttpHttpClientIT {
+class BasicHttpClientIT {
 
     @Test
     public void shouldPostForm(@Wiremock WireMockServer server) throws IOException, SnitcherException {
@@ -29,12 +25,12 @@ class BasicHttpHttpClientIT {
                 .withRequestBody(equalTo("password=theusualpassword&username=kaysersoze"))
                 .willReturn(ok()));
 
-        HttpClient client = new BasicHttpHttpClient();
+        WebClient client = new BasicHttpClient();
         Map<String, String> form = new HashMap<>();
         form.put("username", "kaysersoze");
         form.put("password", "theusualpassword");
 
-        int statusCode = client.postForm("http://localhost:" + server.port() + "/login", form);
+        int statusCode = client.login("http://localhost:" + server.port() + "/login", form);
 
         assertThat(statusCode).isEqualTo(200);
     }
@@ -49,7 +45,7 @@ class BasicHttpHttpClientIT {
                 .withRequestBody(equalTo(body))
                 .willReturn(aResponse().withBody("something")));
 
-        HttpClient client = new BasicHttpHttpClient();
+        WebClient client = new BasicHttpClient();
         String response = client.post("http://localhost:" + server.port() + "/postTest", body);
 
         assertThat(response).isEqualTo("something");
