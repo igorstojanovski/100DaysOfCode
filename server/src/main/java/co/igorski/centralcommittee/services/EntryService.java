@@ -29,9 +29,7 @@ public class EntryService {
 
             Entry entry = new Entry();
             entry.setResult(result);
-            CcTest orCreate = testService.getOrCreate(test);
-            entry.setTest(orCreate);
-            entry.setTest(orCreate);
+            entry.setTest(testService.getOrCreate(test));
 
             entries.add(entryRepository.save(entry));
         }

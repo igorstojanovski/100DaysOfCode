@@ -14,6 +14,7 @@ import javax.persistence.*;
 public class Entry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "entry_id")
     private Long id;
     @ManyToOne(cascade = {CascadeType.REFRESH})
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
