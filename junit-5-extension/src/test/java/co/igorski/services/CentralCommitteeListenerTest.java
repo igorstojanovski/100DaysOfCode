@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import stubs.classes.DummyTest;
 import stubs.exceptions.DummyException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -99,7 +100,7 @@ class CentralCommitteeListenerTest {
     }
 
     @Test
-    public void shouldSendTestPlanFinishedEvent() throws SnitcherException {
+    public void shouldSendTestPlanFinishedEvent() throws SnitcherException, IOException {
         TestPlan testPlan = launcher.discover(request);
         CentralCommitteeListener service = new CentralCommitteeListener(loginService, eventService);
 

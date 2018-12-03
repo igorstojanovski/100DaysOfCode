@@ -35,19 +35,18 @@ class EventService {
         return getTestRunResponse("/event/run/started", runStarted);
     }
 
-    TestRun testRunFinished(Long runId) throws SnitcherException {
+    void testRunFinished(Long runId) throws SnitcherException, IOException {
 
         RunFinished runFinished = new RunFinished();
         runFinished.setRunId(runId);
         runFinished.setTimestamp(new Date());
-        return getTestRunResponse("/event/run/finished", runFinished);
+        postRequest("/event/run/finished", runFinished);
     }
 
     private TestRun getTestRunResponse(String endpoint, Event runEvent) throws SnitcherException {
         TestRun testRunResponse;
         try {
-            String body = objectMapper.writeValueAsString(runEvent);
-            String response = webClient.post(configuration.getServerUrl() + endpoint, body);
+            String response = postRequest(endpoint, runEvent);
             testRunResponse = objectMapper.readValue(response, TestRun.class);
         } catch (JsonProcessingException e) {
             throw new SnitcherException("Error when serializing Run event object to JSON", e);
@@ -55,6 +54,11 @@ class EventService {
             throw new SnitcherException("Error when deserializing JSON to a Run event", e);
         }
         return testRunResponse;
+    }
+
+    private String postRequest(String endpoint, Event runEvent) throws IOException, SnitcherException {
+        String body = objectMapper.writeValueAsString(runEvent);
+        return webClient.post(configuration.getServerUrl() + endpoint, body);
     }
 
     void testStarted(TestModel testModel, Long runId) throws SnitcherException {

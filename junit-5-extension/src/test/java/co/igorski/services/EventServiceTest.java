@@ -119,9 +119,7 @@ class EventServiceTest {
                 "  \"endTime\": 1541629779781\n" +
                 "}");
 
-        TestRun testRun = eventService.testRunFinished(RUN_ID);
-        assertThat(testRun).isNotNull();
-        assertThat(testRun.getId()).isEqualTo(RUN_ID);
+        eventService.testRunFinished(RUN_ID);
 
         verify(basicHttpHttpClient).post(eq(url), bodyCaptor.capture());
         RunFinished runFinished = objectMapper.readValue(bodyCaptor.getValue(), RunFinished.class);
