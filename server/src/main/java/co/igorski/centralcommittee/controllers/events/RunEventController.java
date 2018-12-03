@@ -4,6 +4,7 @@ import co.igorski.centralcommittee.model.Run;
 import co.igorski.centralcommittee.model.events.Event;
 import co.igorski.centralcommittee.model.events.RunFinished;
 import co.igorski.centralcommittee.model.events.RunStarted;
+import co.igorski.centralcommittee.model.responses.RunCreatedResponse;
 import co.igorski.centralcommittee.services.RunService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,9 @@ public class RunEventController {
             return new ResponseEntity<>("Tests must be present.", HttpStatus.BAD_REQUEST);
         }
         Run run = runService.startRun(runStartedEvent);
-        return new ResponseEntity<>(run, HttpStatus.CREATED);
+        RunCreatedResponse runCreatedResponse = new RunCreatedResponse();
+        runCreatedResponse.setId(run.getId());
+        return new ResponseEntity<>(runCreatedResponse, HttpStatus.CREATED);
     }
 
     @PostMapping

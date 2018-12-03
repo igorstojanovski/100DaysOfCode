@@ -16,6 +16,7 @@ import org.junit.platform.launcher.TestPlan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -72,7 +73,7 @@ public class CentralCommitteeListener implements TestExecutionListener {
 
     @Override
     public void executionStarted(TestIdentifier testIdentifier) {
-        if (skipExecution) return;
+        if (skipExecution|| testIdentifier.isContainer()) return;
 
         TestModel testModel = tests.get(getUniqueId(testIdentifier));
         testModel.setStatus(Status.RUNNING);
@@ -101,7 +102,7 @@ public class CentralCommitteeListener implements TestExecutionListener {
 
     @Override
     public void executionFinished(TestIdentifier testIdentifier, TestExecutionResult testExecutionResult) {
-        if (skipExecution) return;
+        if (skipExecution || testIdentifier.isContainer()) return;
 
         TestModel test = tests.get(getUniqueId(testIdentifier));
         test.setStatus(Status.FINISHED);
@@ -126,7 +127,7 @@ public class CentralCommitteeListener implements TestExecutionListener {
 
         try {
             eventService.testRunFinished(testRun.getId());
-        } catch (SnitcherException e) {
+        } catch (SnitcherException | IOException e) {
             LOG.error("Error sending test run finished event.", e);
         }
 
