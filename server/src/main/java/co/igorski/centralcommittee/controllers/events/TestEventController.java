@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/event/test")
 public class TestEventController {
 
+    private static final String TEST_EVENTS_TOPIC = "test-events";
     private final TestService testService;
 
     @Autowired
@@ -30,23 +31,8 @@ public class TestEventController {
     private KafkaTemplate<String, Event> template;
 
     @PostMapping
-    @RequestMapping("/started")
-    public ResponseEntity<CcTest> handleTestStartedEvent(@RequestBody TestStarted testStarted) {
-        template.send("test-events", testStarted);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
-    }
-
-    @PostMapping
-    @RequestMapping("/finished")
-    public ResponseEntity<CcTest> handleTestFinishedEvent(@RequestBody TestFinished testFinished) {
-        template.send("test-events", testFinished);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
-    }
-
-    @PostMapping
-    @RequestMapping("/disabled")
-    public ResponseEntity<CcTest> handleTestDisabledEvent(@RequestBody TestDisabled testDisabled) {
-        template.send("test-events", testDisabled);
+    public ResponseEntity<CcTest> handleTestEvent(@RequestBody Event event) {
+        template.send(TEST_EVENTS_TOPIC, event);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

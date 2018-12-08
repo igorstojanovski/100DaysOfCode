@@ -1,6 +1,7 @@
 package co.igorski.centralcommittee.ui.views;
 
-import co.igorski.centralcommittee.model.Entry;
+import co.igorski.centralcommittee.model.CcTest;
+import co.igorski.centralcommittee.model.Result;
 import co.igorski.centralcommittee.model.Run;
 import co.igorski.centralcommittee.repositories.RunRepository;
 import co.igorski.centralcommittee.services.TestService;
@@ -25,7 +26,7 @@ public class ResultsView extends VerticalLayout implements HasUrlParameter<Strin
     private final RunStore runStore;
     private final TestService testService;
     private Long runId;
-    private final Grid<Entry> grid;
+    private final Grid<Result> grid;
 
     @Autowired
     public ResultsView(RunRepository runRepository, RunStore runStore, TestService testService) {
@@ -45,11 +46,11 @@ public class ResultsView extends VerticalLayout implements HasUrlParameter<Strin
     public void afterNavigation(AfterNavigationEvent event) {
         if(!runStore.containsId(runId)) {
             Run run = runRepository.findById(runId).get();
-            grid.setDataProvider(new ListDataProvider<>(run.getEntries()));
+            grid.setDataProvider(new ListDataProvider<>(run.getResults().values()));
         }
 
-        grid.addColumn(entry -> entry.getTest().getTestName()).setHeader("Test Name");
-        grid.addColumn(entry -> entry.getResult().getStatus()).setHeader("Status");
-        grid.addColumn(entry -> entry.getResult().getOutcome()).setHeader("Outcome");
+        grid.addColumn(result -> result.getTest().getTestName()).setHeader("Test Name");
+        grid.addColumn(Result::getStatus).setHeader("Status");
+        grid.addColumn(Result::getOutcome).setHeader("Outcome");
     }
 }

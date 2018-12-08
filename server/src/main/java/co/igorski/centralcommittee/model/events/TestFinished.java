@@ -13,4 +13,5 @@ public class TestFinished extends Event {
     private Long runId;
     private CcTest test;
     private Outcome outcome;
+    private String error;
 }

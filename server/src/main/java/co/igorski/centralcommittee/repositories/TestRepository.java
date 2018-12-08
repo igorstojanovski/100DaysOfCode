@@ -7,4 +7,5 @@ public interface TestRepository extends PagingAndSortingRepository<CcTest, Long>
 
     CcTest findByTestName(String testName);
 
+    CcTest findByTestPath(String testPath);
 }

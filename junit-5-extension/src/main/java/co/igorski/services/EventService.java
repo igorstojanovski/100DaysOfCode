@@ -3,6 +3,7 @@ package co.igorski.services;
 import co.igorski.client.WebClient;
 import co.igorski.configuration.Configuration;
 import co.igorski.exceptions.SnitcherException;
+import co.igorski.model.Outcome;
 import co.igorski.model.TestModel;
 import co.igorski.model.TestRun;
 import co.igorski.model.User;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.Map;
 
 class EventService {
+    private static final String TEST_EVENT_ENDPOINT = "/event/test";
     private final WebClient webClient;
     private final Configuration configuration;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -67,7 +69,7 @@ class EventService {
         testStarted.setTest(testModel);
         testStarted.setTimestamp(new Date());
         testStarted.setRunId(runId);
-        sendPost("/events/testStarted", testStarted);
+        sendPost(TEST_EVENT_ENDPOINT, testStarted);
     }
 
     void testFinished(TestModel testModel, Long runId) throws SnitcherException {
@@ -76,7 +78,9 @@ class EventService {
         testFinished.setTest(testModel);
         testFinished.setTimestamp(new Date());
         testFinished.setRunId(runId);
-        sendPost("/events/testFinished", testFinished);
+        testFinished.setOutcome(testModel.getOutcome());
+        testFinished.setError(testModel.getError());
+        sendPost(TEST_EVENT_ENDPOINT, testFinished);
     }
 
     private void sendPost(String endpoint, Event event) throws SnitcherException {
@@ -95,6 +99,6 @@ class EventService {
         testDisabled.setTest(testModel);
         testDisabled.setTimestamp(new Date());
         testDisabled.setRunId(runId);
-        sendPost("/events/testDisabled", testDisabled);
+        sendPost(TEST_EVENT_ENDPOINT, testDisabled);
     }
 }

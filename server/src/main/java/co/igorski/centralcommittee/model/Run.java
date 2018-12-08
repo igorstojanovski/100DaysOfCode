@@ -5,8 +5,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -23,8 +26,6 @@ public class Run {
     private Organization organization;
     private Date startTime;
     private Date endTime;
-    //    @ElementCollection(targetClass = Entry.class, fetch = FetchType.EAGER)
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Entry> entries;
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "run", fetch = FetchType.EAGER)
+    private Map<@NotNull String, Result> results;
 }

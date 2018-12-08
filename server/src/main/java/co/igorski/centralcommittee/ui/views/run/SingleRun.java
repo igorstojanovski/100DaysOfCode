@@ -1,7 +1,7 @@
 package co.igorski.centralcommittee.ui.views.run;
 
-import co.igorski.centralcommittee.model.Entry;
 import co.igorski.centralcommittee.model.Outcome;
+import co.igorski.centralcommittee.model.Result;
 import co.igorski.centralcommittee.services.RunService;
 import co.igorski.centralcommittee.services.TestService;
 import co.igorski.centralcommittee.ui.views.layouts.BreadCrumbedView;
@@ -11,12 +11,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
-import com.vaadin.flow.router.AfterNavigationEvent;
-import com.vaadin.flow.router.AfterNavigationObserver;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.router.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Route(value = "Run", layout = BreadCrumbedView.class)
@@ -25,21 +20,19 @@ public class SingleRun extends VerticalLayout implements HasUrlParameter<String>
     private final RunService runService;
     private final TestService testService;
     private Long runId;
-    private final Grid<Entry> grid;
+    private final Grid<Result> grid;
 
     public SingleRun(@Autowired TestService testService, @Autowired RunService runService) {
         this.runService = runService;
         this.testService  = testService;
 
         grid = new Grid<>();
-        grid.addComponentColumn(entry -> {
-            Long testId = entry.getTest().getId();
-            return new RouterLink(testService.getTest(testId).getTestName(),
-                    SingleTest.class, String.valueOf(testId));
-        }).setHeader("Test");
-        grid.addComponentColumn(entry -> {
-            Label label = new Label(entry.getResult().getOutcome().toString());
-            if (Outcome.PASSED.equals(entry.getResult().getOutcome())) {
+        grid.addComponentColumn(result -> new RouterLink(result.getTest().getTestName(),
+                SingleTest.class, String.valueOf(result.getTest().getId()))).setHeader("Test");
+
+        grid.addComponentColumn(result -> {
+            Label label = new Label(result.getOutcome().toString());
+            if (Outcome.PASSED.equals(result.getOutcome())) {
                 label.getStyle().set("color", "green");
             } else {
                 label.getStyle().set("color", "red");
@@ -47,7 +40,8 @@ public class SingleRun extends VerticalLayout implements HasUrlParameter<String>
 
             return label;
         }).setHeader("Outcome");
-        grid.addComponentColumn(entry -> new Label(runService.getFormattedTestDuration(entry.getResult()))).setHeader("Duration");
+
+        grid.addComponentColumn(result -> new Label(runService.getFormattedTestDuration(result))).setHeader("Duration");
 
         add(grid);
     }
@@ -62,7 +56,7 @@ public class SingleRun extends VerticalLayout implements HasUrlParameter<String>
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
         if(event != null) {
-            ListDataProvider<Entry> entryProvider = DataProvider.ofCollection(runService.getEntries(runId));
+            ListDataProvider<Result> entryProvider = DataProvider.ofCollection(runService.getRun(runId).getResults().values());
             grid.setDataProvider(entryProvider);
         }
     }
