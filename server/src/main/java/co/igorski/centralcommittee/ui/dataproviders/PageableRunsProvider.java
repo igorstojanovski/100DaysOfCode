@@ -18,11 +18,12 @@ import java.util.List;
 public class PageableRunsProvider<T, F> extends PageableDataProvider<T, F> {
 
     @Autowired
-    RunRepository runRepository;
+    private RunRepository runRepository;
 
     @Override
     protected Page<Run> fetchFromBackEnd(Query query, Pageable pageable) {
-        return runRepository.findByEndTimeNotNull(pageable);
+        Page<Run> byEndTimeNotNull = runRepository.findByEndTimeNotNull(pageable);
+        return byEndTimeNotNull;
     }
 
     @Override
@@ -34,6 +35,7 @@ public class PageableRunsProvider<T, F> extends PageableDataProvider<T, F> {
 
     @Override
     protected int sizeInBackEnd(Query<T, F> query) {
-        return (int) (long) runRepository.countByStartTimeNotNull();
+        int sizeInBackEnd = (int) (long) runRepository.countByEndTimeNotNull();
+        return sizeInBackEnd;
     }
 }

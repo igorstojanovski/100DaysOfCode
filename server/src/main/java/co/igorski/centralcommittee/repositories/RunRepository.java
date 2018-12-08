@@ -14,8 +14,5 @@ import java.util.List;
 public interface RunRepository extends JpaRepository<Run, Long> {
     Page<Run> findByEndTimeNotNull(Pageable pageable);
 
-    Object countByStartTimeNotNull();
-
-    @Query(value = "SELECT r.* FROM Run r, run_entries re, Entry e WHERE r.id = re.run_id AND re.entries_id = e.id AND e.test_id = :testId", nativeQuery = true)
-    List<Run> findParticipatingRuns(@Param("testId") Long testId);
+    Object countByEndTimeNotNull();
 }

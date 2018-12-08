@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 class EventServiceTest {
 
     public static final String HTTP_LOCALHOST_8080 = "http://localhost:8080";
-    public static final String TEST_CLASS = "co.igorski.tests.EventServiceTest";
+    public static final String TEST_CLASS = "co.igorski.results.EventServiceTest";
     @Mock
     private BasicHttpClient basicHttpHttpClient;
     @Mock
@@ -67,14 +67,14 @@ class EventServiceTest {
         String url = HTTP_LOCALHOST_8080 + "/event/run/started";
         when(basicHttpHttpClient.post(eq(url), anyString())).thenReturn("{\n" +
                 "  \"id\": 1,\n" +
-                "  \"tests\": [\n" +
+                "  \"results\": [\n" +
                 "    {\n" +
                 "      \"testName\": \"shouldRepresentTestOne\",\n" +
-                "      \"testClass\": \"co.igorski.tests.EventServiceTest\"\n" +
+                "      \"testClass\": \"co.igorski.results.EventServiceTest\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"testName\": \"shouldRepresentTestTwo\",\n" +
-                "      \"testClass\": \"co.igorski.tests.EventServiceTest\"\n" +
+                "      \"testClass\": \"co.igorski.results.EventServiceTest\"\n" +
                 "    }\n" +
                 "  ],\n" +
                 "  \"startTime\": 1541629771671\n" +
@@ -105,14 +105,14 @@ class EventServiceTest {
         String url = HTTP_LOCALHOST_8080 + "/event/run/finished";
         when(basicHttpHttpClient.post(eq(url), anyString())).thenReturn("{\n" +
                 "  \"id\": 1,\n" +
-                "  \"tests\": [\n" +
+                "  \"results\": [\n" +
                 "    {\n" +
                 "      \"testName\": \"shouldRepresentTestOne\",\n" +
-                "      \"testClass\": \"co.igorski.tests.EventServiceTest\"\n" +
+                "      \"testClass\": \"co.igorski.results.EventServiceTest\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"testName\": \"shouldRepresentTestTwo\",\n" +
-                "      \"testClass\": \"co.igorski.tests.EventServiceTest\"\n" +
+                "      \"testClass\": \"co.igorski.results.EventServiceTest\"\n" +
                 "    }\n" +
                 "  ],\n" +
                 "  \"startTime\": 1541629771671,\n" +
@@ -134,7 +134,7 @@ class EventServiceTest {
         testModel.setTestClass(TEST_CLASS);
         testModel.setTestName("shouldSendTestStartedEvent");
 
-        String url = HTTP_LOCALHOST_8080 + "/events/testStarted";
+        String url = HTTP_LOCALHOST_8080 + "/event/test/started";
         eventService.testStarted(testModel, RUN_ID);
 
         verify(basicHttpHttpClient).post(eq(url), bodyCaptor.capture());
@@ -153,7 +153,7 @@ class EventServiceTest {
         testModel.setTestClass(TEST_CLASS);
         testModel.setTestName("shouldSendTestFinishedEvent");
 
-        String url = HTTP_LOCALHOST_8080 + "/events/testFinished";
+        String url = HTTP_LOCALHOST_8080 + "/event/test/finished";
         eventService.testFinished(testModel, RUN_ID);
 
         verify(basicHttpHttpClient).post(eq(url), bodyCaptor.capture());
@@ -174,7 +174,7 @@ class EventServiceTest {
         testModel.setTestName("shouldSendTestFinishedEvent");
         testModel.setStatus(Status.DISABLED);
 
-        String url = HTTP_LOCALHOST_8080 + "/events/testDisabled";
+        String url = HTTP_LOCALHOST_8080 + "/event/test/disabled";
         eventService.testDisabled(testModel, RUN_ID);
 
         verify(basicHttpHttpClient).post(eq(url), bodyCaptor.capture());

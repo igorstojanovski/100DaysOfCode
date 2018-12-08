@@ -1,6 +1,6 @@
 package co.igorski.centralcommittee.services;
 
-import co.igorski.centralcommittee.model.Entry;
+import co.igorski.centralcommittee.model.CcTest;
 import co.igorski.centralcommittee.model.Result;
 import co.igorski.centralcommittee.model.Run;
 import co.igorski.centralcommittee.model.events.Event;
@@ -14,29 +14,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class RunService {
     private final ResultRepository resultRepository;
+    private final TestService testService;
     private RunStore runStore;
     private RunRepository runRepository;
-    private EntryService entryService;
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    public RunService(RunStore runStore, RunRepository runRepository, EntryService entryService,
-                      ResultRepository resultRepository) {
+    public RunService(RunStore runStore, RunRepository runRepository, ResultRepository resultRepository,
+                      TestService testService) {
         this.runStore = runStore;
         this.runRepository = runRepository;
-        this.entryService = entryService;
         this.resultRepository = resultRepository;
+        this.testService = testService;
     }
 
     @KafkaListener(topics = "test-events", groupId = "run")
@@ -53,7 +55,10 @@ public class RunService {
         run.setOrganization(runStartedEvent.getOrganization());
         run.setStartTime(runStartedEvent.getTimestamp());
         run.setUser(userService.getUser(runStartedEvent.getUser().getUsername()));
-        run.setEntries(entryService.createEntries(runStartedEvent));
+
+        Map<@NotNull String, Result> testMap = runStartedEvent.getTests().stream()
+                .collect(Collectors.toMap(CcTest::getTestPath, test -> new Result(testService.getOrCreate(test), run)));
+        run.setResults(testMap);
 
         Run created = runRepository.save(run);
         runStore.activateRun(created);
@@ -65,10 +70,6 @@ public class RunService {
         Run run = runStore.deactivateRun(runFinished.getRunId());
         run.setEndTime(new Date());
 
-        for (Entry entry : run.getEntries()) {
-            resultRepository.save(entry.getResult());
-        }
-
         runRepository.save(run);
 
         return run;
@@ -79,15 +80,6 @@ public class RunService {
         Iterable<Run> all = runRepository.findAll();
         all.iterator().forEachRemaining(target::add);
         return target;
-    }
-
-    public List<Entry> getEntries(Long runId) {
-        Optional<Run> runOptional = runRepository.findById(runId);
-        List<Entry> entries = new ArrayList<>();
-        if(runOptional.isPresent()) {
-            entries = runOptional.get().getEntries();
-        }
-        return entries;
     }
 
     public String getFormattedTestDuration(Result result) {
@@ -118,7 +110,7 @@ public class RunService {
         return localDateTime;
     }
 
-    public Collection<Run> getParticipatingRuns(Long testId) {
-        return runRepository.findParticipatingRuns(testId);
+    public Run getRun(Long runId) {
+        return runRepository.findById(runId).get();
     }
 }

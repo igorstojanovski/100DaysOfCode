@@ -5,10 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.cache.annotation.Cacheable;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -23,18 +20,20 @@ public class CcTest {
     private Long id;
     private String testName;
     @NotNull
+    @Column(unique=true)
     private String testPath;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CcTest test = (CcTest) o;
-        return Objects.equals(testName, test.testName);
+        CcTest ccTest = (CcTest) o;
+        return id.equals(ccTest.id) &&
+                testName.equals(ccTest.testName) &&
+                testPath.equals(ccTest.testPath);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(testName);
+        return Objects.hash(id, testName, testPath);
     }
 }

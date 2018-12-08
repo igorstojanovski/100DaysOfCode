@@ -24,7 +24,7 @@ public class TestRuns extends VerticalLayout {
             String id = String.valueOf(run.getId());
             return new RouterLink(id, SingleRun.class, id);
         }).setHeader("ID");
-        grid.addColumn((ValueProvider<Run, Integer>) run -> run.getEntries().size()).setHeader("CcTest Count");
+        grid.addColumn((ValueProvider<Run, Integer>) run -> run.getResults().size()).setHeader("CcTest Count");
         grid.addColumn(
                 new LocalDateTimeRenderer<>(
                         run -> run.getStartTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),

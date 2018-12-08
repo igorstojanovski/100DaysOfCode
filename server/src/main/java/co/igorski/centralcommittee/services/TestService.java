@@ -1,7 +1,6 @@
 package co.igorski.centralcommittee.services;
 
 import co.igorski.centralcommittee.model.CcTest;
-import co.igorski.centralcommittee.model.Entry;
 import co.igorski.centralcommittee.model.Result;
 import co.igorski.centralcommittee.model.Run;
 import co.igorski.centralcommittee.model.Status;
@@ -12,6 +11,8 @@ import co.igorski.centralcommittee.model.events.TestStarted;
 import co.igorski.centralcommittee.repositories.TestRepository;
 import co.igorski.centralcommittee.stores.RunStore;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,12 +20,15 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class TestService {
-
+    private static final Logger LOG = LoggerFactory.getLogger(TestService.class);
     private TestRepository testRepository;
     private RunStore runStore;
 
@@ -40,6 +44,8 @@ public class TestService {
     @KafkaListener(topics = "test-events", groupId = "test")
     public void eventListener(ConsumerRecord<String, Event> cr) {
         Event event = cr.value();
+
+        LOG.info("Received event of type: " + event.getClass().getName());
 
         if(event instanceof TestStarted) {
             testStarted((TestStarted) event);
@@ -66,9 +72,9 @@ public class TestService {
      * @return the test object that exists in the database
      */
     CcTest getOrCreate(CcTest test) {
-        CcTest byTestName = testRepository.findByTestName(test.getTestName());
-        if(byTestName != null) {
-            return byTestName;
+        CcTest testByTestPath = testRepository.findByTestPath(test.getTestPath());
+        if(testByTestPath != null) {
+            return testByTestPath;
         } else {
             return testRepository.save(test);
         }
@@ -89,17 +95,7 @@ public class TestService {
 
     private Result getTestResult(Run run, CcTest test) {
 
-        List<Entry> entries = run.getEntries();
-        Result result = null;
-
-        for(Entry entry : entries) {
-            if(entry.getTest().equals(test)) {
-                result = entry.getResult();
-                break;
-            }
-        }
-
-        return result;
+        return run.getResults().get(test.getTestPath());
     }
 
     public boolean testFinished(TestFinished testFinished) {
@@ -110,6 +106,7 @@ public class TestService {
             result.setStatus(Status.FINISHED);
             result.setOutcome(testFinished.getOutcome());
             result.setEndTime(new Date());
+            result.setError(testFinished.getError());
             markedFinished = true;
         }
 
@@ -126,5 +123,9 @@ public class TestService {
 
     public Object countAll() {
         return testRepository.findAll();
+    }
+
+    public List<CcTest> extractTests(Collection<Result> values) {
+        return values.stream().map(Result::getTest).collect(Collectors.toList());
     }
 }

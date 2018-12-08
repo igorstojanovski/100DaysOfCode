@@ -52,7 +52,7 @@ public class CentralCommitteeListener implements TestExecutionListener {
     /**
      * Has two main functions:<br>
      * 1. to login
-     * 2. to create a list of all tests and send it to {@link EventService#testRunStarted(Map, User)}
+     * 2. to create a list of all results and send it to {@link EventService#testRunStarted(Map, User)}
      *
      * @param testPlan the test plan retrieved from JUnit
      */
@@ -90,7 +90,6 @@ public class CentralCommitteeListener implements TestExecutionListener {
         if (skipExecution) return;
 
         TestModel testModel = tests.get(getUniqueId(testIdentifier));
-        testModel.setStatus(Status.RUNNING);
         try {
             if (reason.endsWith("is @Disabled")) {
                 eventService.testDisabled(testModel, testRun.getId());
@@ -151,7 +150,7 @@ public class CentralCommitteeListener implements TestExecutionListener {
 
     private String getUniqueId(TestIdentifier testIdentifier) {
         MethodSource methodSource = (MethodSource) testIdentifier.getSource().get();
-        return methodSource.getClassName() + '.' + methodSource.getMethodName();
+        return methodSource.getClassName() + '#' + methodSource.getMethodName();
     }
 
     private Map<String, TestModel> collectAllTests(TestPlan testPlan) {
@@ -191,7 +190,7 @@ public class CentralCommitteeListener implements TestExecutionListener {
             MethodSource methodSource = (MethodSource) source.get();
             testModel.setTestName(methodSource.getMethodName());
             testModel.setTestClass(methodSource.getClassName());
-            testModel.setTestPath(methodSource.getClassName() + '.' + methodSource.getMethodName());
+            testModel.setTestPath(methodSource.getClassName() + '#' + methodSource.getMethodName());
             optional = Optional.of(testModel);
         }
 
