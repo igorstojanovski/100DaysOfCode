@@ -3,7 +3,7 @@ package co.igorski.centralcommittee.ui.views.run;
 import co.igorski.centralcommittee.model.Outcome;
 import co.igorski.centralcommittee.model.Result;
 import co.igorski.centralcommittee.services.RunService;
-import co.igorski.centralcommittee.services.TestService;
+import co.igorski.centralcommittee.ui.components.StackTrace;
 import co.igorski.centralcommittee.ui.views.layouts.BreadCrumbedView;
 import co.igorski.centralcommittee.ui.views.test.SingleTest;
 import com.vaadin.flow.component.grid.Grid;
@@ -18,13 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class SingleRun extends VerticalLayout implements HasUrlParameter<String>, AfterNavigationObserver {
 
     private final RunService runService;
-    private final TestService testService;
     private Long runId;
     private final Grid<Result> grid;
+    private final StackTrace stackTrace = new StackTrace("");
 
-    public SingleRun(@Autowired TestService testService, @Autowired RunService runService) {
+    public SingleRun(@Autowired RunService runService) {
         this.runService = runService;
-        this.testService  = testService;
 
         grid = new Grid<>();
         grid.addComponentColumn(result -> new RouterLink(result.getTest().getTestName(),
@@ -42,8 +41,10 @@ public class SingleRun extends VerticalLayout implements HasUrlParameter<String>
         }).setHeader("Outcome");
 
         grid.addComponentColumn(result -> new Label(runService.getFormattedTestDuration(result))).setHeader("Duration");
+        grid.asSingleSelect().addValueChangeListener(event -> stackTrace.setError(event.getValue().getError()));
 
         add(grid);
+        add(stackTrace);
     }
 
     @Override

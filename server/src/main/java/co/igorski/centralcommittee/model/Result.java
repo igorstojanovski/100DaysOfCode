@@ -26,7 +26,7 @@ public class Result {
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="run_id")
     private Run run;
-    @Lob
+    @Column(length=10485760)
     private String error;
 
     public Result(CcTest test, Run run) {

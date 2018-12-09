@@ -1,0 +1,30 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="stack-trace">
+    <template>
+        <style>
+            :host {
+                height: 100%;
+            }
+
+            #stack-trace {
+                width: 80%;
+                padding: 15px;
+                margin: auto;
+                font-size: 13px;
+                color: red;
+            }
+        </style>
+
+        <div id="stack-trace">[[error]]</div>
+    </template>
+    <script>
+        class StackTrace extends Polymer.Element {
+            static get is() {
+                return 'stack-trace'
+            }
+        }
+
+        customElements.define(StackTrace.is, StackTrace);
+    </script>
+</dom-module>
