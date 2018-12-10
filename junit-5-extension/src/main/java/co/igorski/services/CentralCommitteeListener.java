@@ -9,6 +9,7 @@ import co.igorski.model.*;
 import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.TestSource;
+import org.junit.platform.engine.reporting.ReportEntry;
 import org.junit.platform.engine.support.descriptor.MethodSource;
 import org.junit.platform.launcher.TestExecutionListener;
 import org.junit.platform.launcher.TestIdentifier;
@@ -130,6 +131,17 @@ public class CentralCommitteeListener implements TestExecutionListener {
             LOG.error("Error sending test run finished event.", e);
         }
 
+    }
+
+    public void reportingEntryPublished(TestIdentifier testIdentifier, ReportEntry entry) {
+        if (skipExecution) return;
+
+        try {
+            TestModel test = tests.get(getUniqueId(testIdentifier));
+            eventService.testReported(testRun.getId(), test, entry);
+        } catch (SnitcherException e) {
+            LOG.error("Error sending test test report event.", e);
+        }
     }
 
     private static String getStackTrace(Throwable throwable) {

@@ -2,6 +2,7 @@ package org.igorski;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestReporter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,9 +14,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CalculatorTest {
 
     @Test
-    public void shouldAddNumbers() {
+    public void shouldAddNumbers(TestReporter testReporter) {
+        testReporter.publishEntry("Starting test");
         Calculator calculator = new Calculator();
         assertThat(calculator.add(new int[] {1,2,3,4,5})).isEqualTo(15);
+        testReporter.publishEntry("Ending test");
     }
 
     @Disabled

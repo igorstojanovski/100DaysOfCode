@@ -13,6 +13,7 @@ import java.util.Date;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = TestFinished.class, name = "TestFinished"),
         @JsonSubTypes.Type(value = TestStarted.class, name = "TestStarted"),
+        @JsonSubTypes.Type(value = TestReported.class, name = "RunReported"),
         @JsonSubTypes.Type(value = TestDisabled.class, name = "TestDisabled"),
         @JsonSubTypes.Type(value = RunStarted.class, name = "RunStarted"),
         @JsonSubTypes.Type(value = RunFinished.class, name = "RunFinished"),
