@@ -10,6 +10,7 @@ import co.igorski.model.User;
 import co.igorski.model.events.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.platform.engine.reporting.ReportEntry;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -100,5 +101,15 @@ class EventService {
         testDisabled.setTimestamp(new Date());
         testDisabled.setRunId(runId);
         sendPost(TEST_EVENT_ENDPOINT, testDisabled);
+    }
+
+    public void testReported(Long runId, TestModel test, ReportEntry entry) throws SnitcherException {
+        TestReported testReported = new TestReported();
+        testReported.setTest(test);
+        testReported.setTimestamp(new Date());
+        testReported.setRunId(runId);
+        testReported.setReportEntries(entry.getKeyValuePairs());
+
+        sendPost(TEST_EVENT_ENDPOINT, testReported);
     }
 }

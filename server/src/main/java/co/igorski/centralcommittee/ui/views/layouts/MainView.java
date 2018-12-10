@@ -16,6 +16,7 @@ import com.github.appreciated.app.layout.notification.component.AppBarNotificati
 import com.github.appreciated.app.layout.notification.entitiy.DefaultNotification;
 import com.github.appreciated.app.layout.notification.entitiy.Priority;
 import com.github.appreciated.app.layout.router.AppLayoutRouterLayout;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -31,6 +32,7 @@ import static com.github.appreciated.app.layout.entity.Section.HEADER;
 import static com.github.appreciated.app.layout.notification.entitiy.Priority.MEDIUM;
 
 @Push(transport = Transport.LONG_POLLING)
+@StyleSheet("src/css/app-layout.css")
 @Viewport("width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes")
 @Route("")
 public class MainView extends AppLayoutRouterLayout {

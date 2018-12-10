@@ -1,13 +1,7 @@
 package co.igorski.centralcommittee.services;
 
-import co.igorski.centralcommittee.model.CcTest;
-import co.igorski.centralcommittee.model.Result;
-import co.igorski.centralcommittee.model.Run;
-import co.igorski.centralcommittee.model.Status;
-import co.igorski.centralcommittee.model.events.Event;
-import co.igorski.centralcommittee.model.events.TestDisabled;
-import co.igorski.centralcommittee.model.events.TestFinished;
-import co.igorski.centralcommittee.model.events.TestStarted;
+import co.igorski.centralcommittee.model.*;
+import co.igorski.centralcommittee.model.events.*;
 import co.igorski.centralcommittee.repositories.TestRepository;
 import co.igorski.centralcommittee.stores.RunStore;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -20,10 +14,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,6 +46,8 @@ public class TestService {
             }
         } else if (event instanceof TestDisabled) {
             setTestDisabled((TestDisabled) event);
+        } else if (event instanceof TestReported) {
+            testReported((TestReported) event);
         }
     }
 
@@ -73,14 +66,10 @@ public class TestService {
      */
     CcTest getOrCreate(CcTest test) {
         CcTest testByTestPath = testRepository.findByTestPath(test.getTestPath());
-        if(testByTestPath != null) {
-            return testByTestPath;
-        } else {
-            return testRepository.save(test);
-        }
+        return Objects.requireNonNullElseGet(testByTestPath, () -> testRepository.save(test));
     }
 
-    public boolean testStarted(TestStarted testStarted) {
+    private boolean testStarted(TestStarted testStarted) {
         Run run = runStore.getRun(testStarted.getRunId());
         Result result = getTestResult(run, testStarted.getTest());
         boolean markedStarted = false;
@@ -93,12 +82,20 @@ public class TestService {
         return markedStarted;
     }
 
-    private Result getTestResult(Run run, CcTest test) {
+    private void testReported(TestReported testReported) {
+        Run run = runStore.getRun(testReported.getRunId());
+        Result result = getTestResult(run, testReported.getTest());
 
+        for(Map.Entry<String, String> reportEntry : testReported.getReportEntries().entrySet()) {
+            result.addReportEntry(new ReportEntry(testReported.getTimestamp(), reportEntry.getKey(), reportEntry.getValue()));
+        }
+    }
+
+    private Result getTestResult(Run run, CcTest test) {
         return run.getResults().get(test.getTestPath());
     }
 
-    public boolean testFinished(TestFinished testFinished) {
+    private boolean testFinished(TestFinished testFinished) {
         Run run = runStore.getRun(testFinished.getRunId());
         Result result = getTestResult(run, testFinished.getTest());
         boolean markedFinished = false;
@@ -111,21 +108,5 @@ public class TestService {
         }
 
         return markedFinished;
-    }
-
-    public CcTest getTest(Long testId) {
-        return testRepository.findById(testId).get();
-    }
-
-    public Page<CcTest> getAllTests(Pageable pageable) {
-        return testRepository.findAll(pageable);
-    }
-
-    public Object countAll() {
-        return testRepository.findAll();
-    }
-
-    public List<CcTest> extractTests(Collection<Result> values) {
-        return values.stream().map(Result::getTest).collect(Collectors.toList());
     }
 }
