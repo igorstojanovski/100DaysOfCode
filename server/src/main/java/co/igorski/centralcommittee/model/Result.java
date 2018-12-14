@@ -36,7 +36,7 @@ public class Result {
 
     @Column(length=10485760)
     private String error;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ReportEntry> reportEntries = new ArrayList<>();
 
     public Result(CcTest test, Run run) {

@@ -41,7 +41,11 @@ public class SingleRun extends VerticalLayout implements HasUrlParameter<String>
         }).setHeader("Outcome");
 
         grid.addComponentColumn(result -> new Label(runService.getFormattedTestDuration(result))).setHeader("Duration");
-        grid.asSingleSelect().addValueChangeListener(event -> stackTrace.setError(event.getValue().getError()));
+        grid.asSingleSelect().addValueChangeListener(event -> {
+                    stackTrace.setError(event.getValue().getError());
+                    stackTrace.setReportEntries(event.getValue().getReportEntries());
+                }
+        );
 
         add(grid);
         add(stackTrace);
