@@ -5,6 +5,7 @@
         <style>
             :host {
                 height: 100%;
+                width: 100%;
             }
 
             #stack-trace {
@@ -14,8 +15,22 @@
                 font-size: 13px;
                 color: red;
             }
+
+            #report-entries {
+                width: 80%;
+                padding: 15px;
+                margin: auto;
+                font-size: 13px;
+            }
         </style>
 
+        <div id="report-entries">
+            <template is="dom-repeat" items="{{reports}}">
+                <div id="item.id" class="log-entry">
+                    [ {{item.time}} ] {{item.key}} : {{item.value}}
+                </div>
+            </template>
+        </div>
         <div id="stack-trace">[[error]]</div>
     </template>
     <script>

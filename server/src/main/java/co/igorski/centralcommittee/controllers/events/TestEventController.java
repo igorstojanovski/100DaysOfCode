@@ -20,12 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestEventController {
 
     private static final String TEST_EVENTS_TOPIC = "test-events";
-    private final TestService testService;
-
-    @Autowired
-    public TestEventController(TestService testService) {
-        this.testService = testService;
-    }
 
     @Autowired
     private KafkaTemplate<String, Event> template;

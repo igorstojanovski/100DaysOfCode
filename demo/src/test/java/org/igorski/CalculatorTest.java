@@ -23,8 +23,8 @@ class CalculatorTest {
 
     @Disabled
     @Test
-    public void disabledTest() {
-
+    public void disabledTest(TestReporter testReporter) {
+        testReporter.publishEntry("This is actually a disabled test and this should not be logged.");
     }
 
 }
