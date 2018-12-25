@@ -1,5 +1,7 @@
 package co.igorski.centralcommittee.ui.views.layouts;
 
+import co.igorski.centralcommittee.ui.views.admin.Projects;
+import co.igorski.centralcommittee.ui.views.admin.Users;
 import co.igorski.centralcommittee.ui.views.run.LiveTestRuns;
 import co.igorski.centralcommittee.ui.views.run.TestRuns;
 import com.github.appreciated.app.layout.behaviour.AppLayout;
@@ -9,6 +11,7 @@ import com.github.appreciated.app.layout.component.appbar.AppBarBuilder;
 import com.github.appreciated.app.layout.component.appmenu.MenuHeaderComponent;
 import com.github.appreciated.app.layout.component.appmenu.left.LeftNavigationComponent;
 import com.github.appreciated.app.layout.component.appmenu.left.builder.LeftAppMenuBuilder;
+import com.github.appreciated.app.layout.component.appmenu.left.builder.LeftSubMenuBuilder;
 import com.github.appreciated.app.layout.design.AppLayoutDesign;
 import com.github.appreciated.app.layout.entity.DefaultBadgeHolder;
 import com.github.appreciated.app.layout.notification.DefaultNotificationHolder;
@@ -59,8 +62,17 @@ public class MainView extends AppLayoutRouterLayout {
                     .withAppMenu(
                             LeftAppMenuBuilder.get()
                                     .addToSection(new MenuHeaderComponent("Central Committee", "", "frontend/images/logo.png"), HEADER)
-                                    .add(new LeftNavigationComponent("Live Runs", VaadinIcon.PLAY.create(), LiveTestRuns.class))
-                                    .add(new LeftNavigationComponent("Past Runs", VaadinIcon.LIST.create(), TestRuns.class))
+                                    .add(LeftSubMenuBuilder.get("Runs", VaadinIcon.RECORDS.create())
+                                            .add(new LeftNavigationComponent("Live Runs", VaadinIcon.PLAY.create(), LiveTestRuns.class))
+                                            .add(new LeftNavigationComponent("Past Runs", VaadinIcon.LIST.create(), TestRuns.class))
+                                            .build()
+                                    )
+                                    .add(LeftSubMenuBuilder.get("Admin", VaadinIcon.USER.create())
+                                            .add(new LeftNavigationComponent("Users", VaadinIcon.USERS.create(), Users.class))
+                                            .add(new LeftNavigationComponent("Projects", VaadinIcon.TASKS.create(), Projects.class))
+                                            .build()
+                                    )
+
                                     .build()
                     ).build();
         } else {

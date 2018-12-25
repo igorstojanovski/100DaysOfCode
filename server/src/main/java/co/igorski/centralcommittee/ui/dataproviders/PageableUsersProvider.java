@@ -1,6 +1,7 @@
 package co.igorski.centralcommittee.ui.dataproviders;
 
-import co.igorski.centralcommittee.repositories.RunRepository;
+import co.igorski.centralcommittee.model.User;
+import co.igorski.centralcommittee.repositories.UserRepository;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.provider.SortDirection;
@@ -13,15 +14,15 @@ import org.vaadin.artur.spring.dataprovider.PageableDataProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service("RunsProvider")
-public class PageableRunsProvider<T, F> extends PageableDataProvider<T, F> {
+@Service("UserProvider")
+public class PageableUsersProvider<F> extends PageableDataProvider<User, F> {
 
     @Autowired
-    private RunRepository runRepository;
+    private UserRepository usersRepository;
 
     @Override
-    protected Page<T> fetchFromBackEnd(Query query, Pageable pageable) {
-        return (Page<T>) runRepository.findByEndTimeNotNull(pageable);
+    protected Page<User> fetchFromBackEnd(Query<User, F> query, Pageable pageable) {
+        return usersRepository.findAll(pageable);
     }
 
     @Override
@@ -32,7 +33,7 @@ public class PageableRunsProvider<T, F> extends PageableDataProvider<T, F> {
     }
 
     @Override
-    protected int sizeInBackEnd(Query<T, F> query) {
-        return (int) (long) runRepository.countByEndTimeNotNull();
+    protected int sizeInBackEnd(Query<User, F> query) {
+        return (int) (long) usersRepository.count();
     }
 }

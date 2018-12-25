@@ -65,5 +65,4 @@ public class SingleRun extends VerticalLayout implements HasUrlParameter<String>
             grid.setDataProvider(entryProvider);
         }
     }
-
 }
