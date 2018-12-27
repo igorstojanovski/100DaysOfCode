@@ -1,4 +1,4 @@
-package co.igorski.centralcommittee.ui.dataproviders;
+package co.igorski.centralcommittee.ui.user.providers;
 
 import co.igorski.centralcommittee.model.User;
 import co.igorski.centralcommittee.repositories.UserRepository;
@@ -22,7 +22,7 @@ public class PageableUsersProvider<F> extends PageableDataProvider<User, F> {
 
     @Override
     protected Page<User> fetchFromBackEnd(Query<User, F> query, Pageable pageable) {
-        return usersRepository.findAll(pageable);
+        return usersRepository.findByEnabledTrue(pageable);
     }
 
     @Override
@@ -34,6 +34,6 @@ public class PageableUsersProvider<F> extends PageableDataProvider<User, F> {
 
     @Override
     protected int sizeInBackEnd(Query<User, F> query) {
-        return (int) (long) usersRepository.count();
+        return (int) (long) usersRepository.countByEnabledTrue();
     }
 }
