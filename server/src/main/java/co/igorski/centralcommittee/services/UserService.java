@@ -3,6 +3,8 @@ package co.igorski.centralcommittee.services;
 import co.igorski.centralcommittee.model.User;
 import co.igorski.centralcommittee.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,5 +33,13 @@ public class UserService {
         Iterable<User> allUsers = userRepository.findAll();
         allUsers.forEach(users::add);
         return users;
+    }
+
+    public void disableUser(User user) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!auth.getPrincipal().equals(user.getUsername())) {
+            user.setEnabled(false);
+            userRepository.save(user);
+        }
     }
 }

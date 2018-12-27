@@ -1,4 +1,4 @@
-package co.igorski.centralcommittee.ui.views.forms;
+package co.igorski.centralcommittee.ui.user.forms;
 
 import co.igorski.centralcommittee.model.Role;
 import co.igorski.centralcommittee.model.User;
@@ -39,4 +39,10 @@ public class NewUserForm extends FormLayout {
         return user;
     }
 
+    public void reset() {
+        nameField.clear();
+        usernameField.clear();
+        passwordField.clear();
+        roleChoice.clear();
+    }
 }
