@@ -3,6 +3,7 @@ package co.igorski.centralcommittee.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 
@@ -10,17 +11,12 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "app_user")
-public class User {
+public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String username;
-    private String password;
+    @NaturalId
     private String name;
-    private Role role;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     private Organization organization;
-    private boolean enabled = true;
 }

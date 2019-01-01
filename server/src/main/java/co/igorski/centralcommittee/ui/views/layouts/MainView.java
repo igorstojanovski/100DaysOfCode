@@ -1,7 +1,7 @@
 package co.igorski.centralcommittee.ui.views.layouts;
 
+import co.igorski.centralcommittee.ui.project.dialogs.Projects;
 import co.igorski.centralcommittee.ui.user.dialogs.Users;
-import co.igorski.centralcommittee.ui.views.admin.Projects;
 import co.igorski.centralcommittee.ui.views.run.LiveTestRuns;
 import co.igorski.centralcommittee.ui.views.run.TestRuns;
 import com.github.appreciated.app.layout.behaviour.AppLayout;

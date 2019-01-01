@@ -20,4 +20,8 @@ public class Configuration {
     public String getPassword() {
         return properties.getProperty("password");
     }
+
+    public String getProjectName() {
+        return properties.getProperty("projectName");
+    }
 }

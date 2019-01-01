@@ -1,6 +1,7 @@
 package co.igorski.centralcommittee.services;
 
 import co.igorski.centralcommittee.model.CcTest;
+import co.igorski.centralcommittee.model.Project;
 import co.igorski.centralcommittee.model.Result;
 import co.igorski.centralcommittee.model.Run;
 import co.igorski.centralcommittee.model.events.Event;
@@ -18,7 +19,10 @@ import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -49,9 +53,10 @@ public class RunService {
         }
     }
 
-    public Run startRun(RunStarted runStartedEvent) {
+    public Run startRun(RunStarted runStartedEvent, Project project) {
 
         Run run = new Run();
+        run.setProject(project);
         run.setOrganization(runStartedEvent.getOrganization());
         run.setStartTime(runStartedEvent.getTimestamp());
         run.setUser(userService.getUser(runStartedEvent.getUser().getUsername()));

@@ -3,7 +3,6 @@ package co.igorski.services;
 import co.igorski.client.WebClient;
 import co.igorski.configuration.Configuration;
 import co.igorski.exceptions.SnitcherException;
-import co.igorski.model.Outcome;
 import co.igorski.model.TestModel;
 import co.igorski.model.TestRun;
 import co.igorski.model.User;
@@ -34,6 +33,7 @@ class EventService {
         runStarted.setUser(user);
         runStarted.setTests(new ArrayList<>(tests.values()));
         runStarted.setTimestamp(new Date());
+        runStarted.setProjectName(configuration.getProjectName());
 
         return getTestRunResponse("/event/run/started", runStarted);
     }
