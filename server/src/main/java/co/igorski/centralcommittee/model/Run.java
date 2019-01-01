@@ -7,8 +7,6 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -28,4 +26,6 @@ public class Run {
     private Date endTime;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "run", fetch = FetchType.EAGER)
     private Map<@NotNull String, Result> results;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Project project;
 }

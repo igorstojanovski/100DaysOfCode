@@ -1,11 +1,9 @@
 package co.igorski.centralcommittee.controllers.events;
 
-import co.igorski.centralcommittee.model.CcTest;
-import co.igorski.centralcommittee.model.Organization;
-import co.igorski.centralcommittee.model.Run;
-import co.igorski.centralcommittee.model.User;
+import co.igorski.centralcommittee.model.*;
 import co.igorski.centralcommittee.model.events.RunFinished;
 import co.igorski.centralcommittee.model.events.RunStarted;
+import co.igorski.centralcommittee.services.ProjectService;
 import co.igorski.centralcommittee.services.RunService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +28,11 @@ class RunEventControllerTest {
     private static CcTest testTwo;
     @Mock
     private RunService runService;
+    @Mock
+    private ProjectService projectService;
     private RunEventController runController;
+    @Mock
+    private Project mockProject;
 
     @BeforeAll
     public static void beforeAll() {
@@ -54,7 +56,7 @@ class RunEventControllerTest {
 
     @BeforeEach
     public void beforeEach() {
-        runController = new RunEventController(runService);
+        runController = new RunEventController(runService, projectService);
     }
 
     @Test
@@ -69,7 +71,7 @@ class RunEventControllerTest {
         runStarted.setOrganization(organization);
 
         Run run = new Run();
-        when(runService.startRun(runStarted)).thenReturn(run);
+        when(runService.startRun(runStarted, mockProject)).thenReturn(run);
 
         ResponseEntity<Run> runResponseEntity = runController.runStarted(runStarted);
 

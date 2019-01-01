@@ -16,4 +16,5 @@ public class RunStarted extends Event {
     private Organization organization;
     private User user;
     private List<TestModel> tests;
+    private String projectName;
 }
