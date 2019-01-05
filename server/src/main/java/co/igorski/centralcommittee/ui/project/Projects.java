@@ -1,8 +1,9 @@
-package co.igorski.centralcommittee.ui.project.dialogs;
+package co.igorski.centralcommittee.ui.project;
 
 import co.igorski.centralcommittee.model.Project;
 import co.igorski.centralcommittee.services.OrganizationService;
 import co.igorski.centralcommittee.services.ProjectService;
+import co.igorski.centralcommittee.ui.project.dialogs.NewProjectDialog;
 import co.igorski.centralcommittee.ui.views.layouts.BreadCrumbedView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;

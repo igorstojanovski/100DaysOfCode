@@ -18,7 +18,6 @@ public class NewProjectForm extends FormLayout {
         nameField = new TextField();
 
         organizationsCombo = new ComboBox<>();
-        organizationsCombo.setLabel("Organization");
         organizationsCombo.setItemLabelGenerator(Organization::getName);
         organizationsCombo.setItems(organizations);
 

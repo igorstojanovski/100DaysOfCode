@@ -62,6 +62,7 @@ public class RunService {
         run.setUser(userService.getUser(runStartedEvent.getUser().getUsername()));
 
         Map<@NotNull String, Result> testMap = runStartedEvent.getTests().stream()
+                .peek(ccTest -> ccTest.setProject(project))
                 .collect(Collectors.toMap(CcTest::getTestPath, test -> new Result(testService.getOrCreate(test), run)));
         run.setResults(testMap);
 

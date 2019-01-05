@@ -27,14 +27,14 @@ public class CentralCommittee {
 
 	@PostConstruct
 	public void setup() {
+        if (userService.getUser("sinatra") != null) {
+            return;
+        }
+
 		Organization organization = new Organization();
 		organization.setName("Igorski.Co");
 
 		organization = organizationService.createOrganization(organization);
-
-        if (userService.getUser("sinatra") != null) {
-            return;
-        }
 
 		User user = new User();
 		user.setName("Frank");
