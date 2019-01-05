@@ -1,7 +1,8 @@
-package co.igorski.centralcommittee.ui.user.dialogs;
+package co.igorski.centralcommittee.ui.user;
 
 import co.igorski.centralcommittee.model.User;
 import co.igorski.centralcommittee.services.UserService;
+import co.igorski.centralcommittee.ui.user.dialogs.NewUserDialog;
 import co.igorski.centralcommittee.ui.views.layouts.BreadCrumbedView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;

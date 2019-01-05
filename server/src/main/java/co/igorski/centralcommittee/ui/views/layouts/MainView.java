@@ -1,7 +1,8 @@
 package co.igorski.centralcommittee.ui.views.layouts;
 
-import co.igorski.centralcommittee.ui.project.dialogs.Projects;
-import co.igorski.centralcommittee.ui.user.dialogs.Users;
+import co.igorski.centralcommittee.ui.project.Projects;
+import co.igorski.centralcommittee.ui.tests.Tests;
+import co.igorski.centralcommittee.ui.user.Users;
 import co.igorski.centralcommittee.ui.views.run.LiveTestRuns;
 import co.igorski.centralcommittee.ui.views.run.TestRuns;
 import com.github.appreciated.app.layout.behaviour.AppLayout;
@@ -62,9 +63,10 @@ public class MainView extends AppLayoutRouterLayout {
                     .withAppMenu(
                             LeftAppMenuBuilder.get()
                                     .addToSection(new MenuHeaderComponent("Central Committee", "", "frontend/images/logo.png"), HEADER)
-                                    .add(LeftSubMenuBuilder.get("Runs", VaadinIcon.RECORDS.create())
+                                    .add(LeftSubMenuBuilder.get("Records", VaadinIcon.FOLDER.create())
                                             .add(new LeftNavigationComponent("Live Runs", VaadinIcon.PLAY.create(), LiveTestRuns.class))
-                                            .add(new LeftNavigationComponent("Past Runs", VaadinIcon.LIST.create(), TestRuns.class))
+                                            .add(new LeftNavigationComponent("Past Runs", VaadinIcon.ARCHIVE.create(), TestRuns.class))
+                                            .add(new LeftNavigationComponent("Tests", VaadinIcon.FILE_CODE.create(), Tests.class))
                                             .build()
                                     )
                                     .add(LeftSubMenuBuilder.get("Admin", VaadinIcon.USER.create())

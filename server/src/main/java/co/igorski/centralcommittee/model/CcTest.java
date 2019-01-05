@@ -22,6 +22,9 @@ public class CcTest {
     @NotNull
     @Column(unique=true)
     private String testPath;
+    @ManyToOne
+    private Project project;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

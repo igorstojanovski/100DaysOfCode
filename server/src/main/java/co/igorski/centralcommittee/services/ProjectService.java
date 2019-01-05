@@ -5,6 +5,9 @@ import co.igorski.centralcommittee.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ProjectService {
 
@@ -21,5 +24,12 @@ public class ProjectService {
 
     public Project createProject(Project project) {
         return projectRepository.save(project);
+    }
+
+    public List<Project> getProjects() {
+        List<Project> projects = new ArrayList<>();
+        projectRepository.findAll().forEach(projects::add);
+
+        return projects;
     }
 }
