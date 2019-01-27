@@ -5,7 +5,11 @@ import co.igorski.client.WebClient;
 import co.igorski.configuration.Configuration;
 import co.igorski.configuration.PropertiesConfigurationReader;
 import co.igorski.exceptions.SnitcherException;
-import co.igorski.model.*;
+import co.igorski.model.Outcome;
+import co.igorski.model.Status;
+import co.igorski.model.TestModel;
+import co.igorski.model.TestRun;
+import co.igorski.model.User;
 import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.TestSource;
@@ -18,7 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.StringJoiner;
 
 /**
  * The central service that will act as a facade.
@@ -53,7 +61,7 @@ public class CentralCommitteeListener implements TestExecutionListener {
     /**
      * Has two main functions:<br>
      * 1. to login
-     * 2. to create a list of all results and send it to {@link EventService#testRunStarted(Map, User)}
+     * 2. to create a list of all results and send it to {@link EventService#testPlanStarted(Map, User)}
      *
      * @param testPlan the test plan retrieved from JUnit
      */
@@ -66,7 +74,7 @@ public class CentralCommitteeListener implements TestExecutionListener {
         }
         try {
             tests = collectAllTests(testPlan);
-            testRun = eventService.testRunStarted(tests, user);
+            testRun = eventService.testPlanStarted(tests, user);
         } catch (SnitcherException e) {
             skipExecution = true;
         }

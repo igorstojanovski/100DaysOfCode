@@ -6,7 +6,13 @@ import co.igorski.exceptions.SnitcherException;
 import co.igorski.model.TestModel;
 import co.igorski.model.TestRun;
 import co.igorski.model.User;
-import co.igorski.model.events.*;
+import co.igorski.model.events.Event;
+import co.igorski.model.events.RunFinished;
+import co.igorski.model.events.RunStarted;
+import co.igorski.model.events.TestDisabled;
+import co.igorski.model.events.TestFinished;
+import co.igorski.model.events.TestReported;
+import co.igorski.model.events.TestStarted;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.platform.engine.reporting.ReportEntry;
@@ -27,7 +33,7 @@ class EventService {
         this.configuration = configuration;
     }
 
-    TestRun testRunStarted(Map<String, TestModel> tests, User user) throws SnitcherException {
+    TestRun testPlanStarted(Map<String, TestModel> tests, User user) throws SnitcherException {
 
         RunStarted runStarted = new RunStarted();
         runStarted.setUser(user);

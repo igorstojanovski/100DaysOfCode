@@ -1,7 +1,11 @@
 package co.igorski.services;
 
 import co.igorski.exceptions.SnitcherException;
-import co.igorski.model.*;
+import co.igorski.model.Outcome;
+import co.igorski.model.Status;
+import co.igorski.model.TestModel;
+import co.igorski.model.TestRun;
+import co.igorski.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +35,9 @@ import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectPackage;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -60,6 +66,7 @@ class CentralCommitteeListenerTest {
         test = new TestModel();
         test.setTestName("shouldReturnCorrectResult");
         test.setTestClass("stubs.classes.DummyTest");
+        test.setTestPath("stubs.classes.DummyTest#shouldReturnCorrectResult");
 
         tests = new HashMap<>();
         tests.put(test.getTestPath(), test);
@@ -84,7 +91,7 @@ class CentralCommitteeListenerTest {
 
         service.testPlanExecutionStarted(testPlan);
 
-        verify(eventService).testRunStarted(tests, user);
+        verify(eventService).testPlanStarted(tests, user);
     }
 
     @Test
@@ -96,21 +103,22 @@ class CentralCommitteeListenerTest {
 
         service.testPlanExecutionStarted(testPlan);
 
-        verify(eventService, never()).testRunStarted(any(), any());
+        verify(eventService, never()).testPlanStarted(any(), any());
     }
 
     @Test
     public void shouldSendTestPlanFinishedEvent() throws SnitcherException, IOException {
         TestPlan testPlan = launcher.discover(request);
-        CentralCommitteeListener service = new CentralCommitteeListener(loginService, eventService);
-
         User user = new User();
         when(loginService.login()).thenReturn(user);
+
+        CentralCommitteeListener service = new CentralCommitteeListener(loginService, eventService);
+
         TestRun testRun = new TestRun();
         testRun.setId(1L);
-        when(eventService.testRunStarted(tests, user)).thenReturn(testRun);
-        service.testPlanExecutionStarted(testPlan);
+        when(eventService.testPlanStarted(tests, user)).thenReturn(testRun);
 
+        service.testPlanExecutionStarted(testPlan);
         service.testPlanExecutionFinished(testPlan);
 
         verify(eventService).testRunFinished(1L);
@@ -126,7 +134,7 @@ class CentralCommitteeListenerTest {
         when(loginService.login()).thenReturn(user);
         TestRun testRun = new TestRun();
         testRun.setId(1L);
-        when(eventService.testRunStarted(tests, user)).thenReturn(testRun);
+        when(eventService.testPlanStarted(tests, user)).thenReturn(testRun);
         service.testPlanExecutionStarted(testPlan);
 
         TestIdentifier testIdentifier = getTestIdentifier();
@@ -145,7 +153,7 @@ class CentralCommitteeListenerTest {
         when(loginService.login()).thenReturn(user);
         TestRun testRun = new TestRun();
         testRun.setId(1L);
-        when(eventService.testRunStarted(tests, user)).thenReturn(testRun);
+        when(eventService.testPlanStarted(tests, user)).thenReturn(testRun);
         service.testPlanExecutionStarted(testPlan);
 
         TestIdentifier testIdentifier = getTestIdentifier();
@@ -163,7 +171,7 @@ class CentralCommitteeListenerTest {
         when(loginService.login()).thenReturn(user);
         TestRun testRun = new TestRun();
         testRun.setId(1L);
-        when(eventService.testRunStarted(tests, user)).thenReturn(testRun);
+        when(eventService.testPlanStarted(tests, user)).thenReturn(testRun);
         service.testPlanExecutionStarted(testPlan);
 
         TestIdentifier testIdentifier = getTestIdentifier();
@@ -185,7 +193,7 @@ class CentralCommitteeListenerTest {
         when(loginService.login()).thenReturn(user);
         TestRun testRun = new TestRun();
         testRun.setId(1L);
-        when(eventService.testRunStarted(tests, user)).thenReturn(testRun);
+        when(eventService.testPlanStarted(tests, user)).thenReturn(testRun);
         service.testPlanExecutionStarted(testPlan);
 
         TestIdentifier testIdentifier = getTestIdentifier();
