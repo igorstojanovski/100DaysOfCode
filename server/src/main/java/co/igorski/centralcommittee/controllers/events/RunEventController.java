@@ -28,9 +28,10 @@ public class RunEventController {
     private KafkaTemplate<String, Event> template;
 
     @Autowired
-    public RunEventController(RunService runService, ProjectService projectService) {
+    public RunEventController(RunService runService, ProjectService projectService, KafkaTemplate<String, Event> template) {
         this.runService = runService;
         this.projectService = projectService;
+        this.template = template;
     }
 
     @PostMapping
