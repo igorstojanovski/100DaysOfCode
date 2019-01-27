@@ -14,9 +14,10 @@ class PropertiesConfigurationReaderTest {
                 new PropertiesConfigurationReader();
         Properties properties = propertiesConfigurationReader.readProperties("configuration.properties");
 
-        assertThat(properties.values().size()).isEqualTo(2);
+        assertThat(properties.values().size()).isEqualTo(3);
         assertThat(properties.getProperty("username")).isEqualTo("testUser");
         assertThat(properties.getProperty("password")).isEqualTo("testPassword");
+        assertThat(properties.getProperty("projectName")).isEqualTo("DemoProject");
     }
 
 }

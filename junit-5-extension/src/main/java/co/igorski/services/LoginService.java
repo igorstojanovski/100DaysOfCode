@@ -29,7 +29,8 @@ class LoginService {
         form.put("password", configuration.getPassword());
 
         try {
-            int responseStatus = webClient.login(configuration.getServerUrl() + "/login", form);
+            String loginUrl = configuration.getServerUrl() + "/login";
+            int responseStatus = webClient.login(loginUrl, form);
 
             if (responseStatus == 302) {
                 user = new User();

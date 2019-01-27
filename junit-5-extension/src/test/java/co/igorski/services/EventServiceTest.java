@@ -7,7 +7,11 @@ import co.igorski.model.Status;
 import co.igorski.model.TestModel;
 import co.igorski.model.TestRun;
 import co.igorski.model.User;
-import co.igorski.model.events.*;
+import co.igorski.model.events.RunFinished;
+import co.igorski.model.events.RunStarted;
+import co.igorski.model.events.TestDisabled;
+import co.igorski.model.events.TestFinished;
+import co.igorski.model.events.TestStarted;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,7 +71,7 @@ class EventServiceTest {
         String url = HTTP_LOCALHOST_8080 + "/event/run/started";
         when(basicHttpHttpClient.post(eq(url), anyString())).thenReturn("{\n" +
                 "  \"id\": 1,\n" +
-                "  \"results\": [\n" +
+                "  \"tests\": [\n" +
                 "    {\n" +
                 "      \"testName\": \"shouldRepresentTestOne\",\n" +
                 "      \"testClass\": \"co.igorski.results.EventServiceTest\"\n" +
@@ -83,7 +87,7 @@ class EventServiceTest {
         User user = new User();
         user.setUsername("someUser");
 
-        TestRun startedTestRun = eventService.testRunStarted(tests, user);
+        TestRun startedTestRun = eventService.testPlanStarted(tests, user);
 
         verify(basicHttpHttpClient).post(eq(url), bodyCaptor.capture());
         assertThat(startedTestRun).isNotNull();
@@ -105,7 +109,7 @@ class EventServiceTest {
         String url = HTTP_LOCALHOST_8080 + "/event/run/finished";
         when(basicHttpHttpClient.post(eq(url), anyString())).thenReturn("{\n" +
                 "  \"id\": 1,\n" +
-                "  \"results\": [\n" +
+                "  \"tests\": [\n" +
                 "    {\n" +
                 "      \"testName\": \"shouldRepresentTestOne\",\n" +
                 "      \"testClass\": \"co.igorski.results.EventServiceTest\"\n" +
@@ -134,7 +138,7 @@ class EventServiceTest {
         testModel.setTestClass(TEST_CLASS);
         testModel.setTestName("shouldSendTestStartedEvent");
 
-        String url = HTTP_LOCALHOST_8080 + "/event/test/started";
+        String url = HTTP_LOCALHOST_8080 + "/event/test";
         eventService.testStarted(testModel, RUN_ID);
 
         verify(basicHttpHttpClient).post(eq(url), bodyCaptor.capture());
@@ -153,7 +157,7 @@ class EventServiceTest {
         testModel.setTestClass(TEST_CLASS);
         testModel.setTestName("shouldSendTestFinishedEvent");
 
-        String url = HTTP_LOCALHOST_8080 + "/event/test/finished";
+        String url = HTTP_LOCALHOST_8080 + "/event/test";
         eventService.testFinished(testModel, RUN_ID);
 
         verify(basicHttpHttpClient).post(eq(url), bodyCaptor.capture());
@@ -174,7 +178,7 @@ class EventServiceTest {
         testModel.setTestName("shouldSendTestFinishedEvent");
         testModel.setStatus(Status.DISABLED);
 
-        String url = HTTP_LOCALHOST_8080 + "/event/test/disabled";
+        String url = HTTP_LOCALHOST_8080 + "/event/test";
         eventService.testDisabled(testModel, RUN_ID);
 
         verify(basicHttpHttpClient).post(eq(url), bodyCaptor.capture());

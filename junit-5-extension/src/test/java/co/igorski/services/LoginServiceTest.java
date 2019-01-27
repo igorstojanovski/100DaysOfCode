@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 class LoginServiceTest {
 
     private static final String HTTP_LOCALHOST_8080 = "http://localhost:8080";
+    private static final String LOGIN_URL = HTTP_LOCALHOST_8080 + "/login";
     @Mock
     private Configuration configuration;
     @Mock
@@ -45,11 +46,11 @@ class LoginServiceTest {
     public void shouldReturnTrueWhenLoginSucceeded() throws IOException, SnitcherException {
         LoginService loginService = new LoginService(configuration, webClient);
 
-        when(webClient.login(HTTP_LOCALHOST_8080, form)).thenReturn(200);
+        when(webClient.login(LOGIN_URL, form)).thenReturn(302);
 
         User user = loginService.login();
 
-        verify(webClient).login(HTTP_LOCALHOST_8080, form);
+        verify(webClient).login(LOGIN_URL, form);
         assertThat(user.getUsername()).isEqualTo(USERNAME);
     }
 
@@ -57,11 +58,11 @@ class LoginServiceTest {
     public void shouldReturnFalseWhenLoginFailed() throws IOException, SnitcherException {
         LoginService loginService = new LoginService(configuration, webClient);
 
-        when(webClient.login(HTTP_LOCALHOST_8080, form)).thenReturn(401);
+        when(webClient.login(LOGIN_URL, form)).thenReturn(401);
 
         User user = loginService.login();
 
-        verify(webClient).login(HTTP_LOCALHOST_8080, form);
+        verify(webClient).login(LOGIN_URL, form);
         assertThat(user).isNull();
     }
 }
